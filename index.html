@@ -1,0 +1,1955 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#110e16">
+<title>Cast — roleplay, together</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#110e16;--bg2:#17131e;--bg3:#1c1725;--panel:#241e2f;--panel2:#2c2539;--line:#332b40;
+  --text:#efe9f4;--muted:#9d93ab;--faint:#6f667c;
+  --accent:#e9a24e;--accent-ink:#1b1206;--rose:#d4637a;--ok:#56c88a;--idle:#e3bf4f;--danger:#e0566a;
+  --dlg:#f5d7a8;--act:#c9bdd8;--mention-bg:rgba(233,162,78,.16);
+  --r:14px;--rs:9px;--fs:15px;
+  --display:'Fraunces',Georgia,serif;--body:'DM Sans',system-ui,-apple-system,sans-serif;
+  --sat:env(safe-area-inset-top);--sab:env(safe-area-inset-bottom);
+}
+:root[data-theme="light"]{
+  --bg:#ece7f0;--bg2:#f4f0f7;--bg3:#fbf9fc;--panel:#ffffff;--panel2:#f1ecf5;--line:#ddd4e4;
+  --text:#221b2b;--muted:#6c6178;--faint:#9a90a6;--dlg:#8a4c0c;--act:#5d4f6e;--accent-ink:#fff;
+  --mention-bg:rgba(233,162,78,.2);
+}
+:root[data-theme="midnight"]{
+  --bg:#05070d;--bg2:#0a0e17;--bg3:#0d121c;--panel:#141b28;--panel2:#1a2333;--line:#232d40;
+  --text:#e6ecf5;--muted:#8d9ab0;--faint:#5b6880;--dlg:#bcd6ff;--act:#a9b6cc;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:400 var(--fs)/1.45 var(--body);overscroll-behavior:none}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0;touch-action:manipulation}
+html.kb #nav{display:none!important}
+@media (max-width:820px){html.kb #side,html.kb #main{bottom:0!important}}
+@media (hover:none){.msg:hover{background:none}.ch:hover,.mem:hover,.mi:hover{background:none}.ch.on{background:var(--panel2)}.mi.on{background:var(--panel)}}
+a{color:var(--accent)}
+img{display:block}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.h-display{font-family:var(--display);font-weight:700;letter-spacing:-.01em}
+.muted{color:var(--muted)}.faint{color:var(--faint)}.small{font-size:.86em}.tiny{font-size:.76em}
+.hidden{display:none!important}
+.row{display:flex;align-items:center;gap:10px}.grow{flex:1;min-width:0}.wrap{flex-wrap:wrap}
+.ellip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* buttons & inputs */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;background:var(--panel2);font-weight:500;transition:.15s}
+.btn:hover{filter:brightness(1.12)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 45%,transparent)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.btn.sm{height:32px;padding:0 12px;font-size:.88em}
+.btn:disabled{opacity:.5;pointer-events:none}
+.ibtn{width:36px;height:36px;border-radius:10px;display:inline-grid;place-items:center;color:var(--muted);font-size:18px;flex:none}
+.ibtn:hover{background:var(--panel);color:var(--text)}
+.field{display:block;margin:0 0 14px}
+.field>span{display:block;font-size:.8em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.inp{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--rs);padding:11px 12px;font-size:16px;outline:none}
+.inp:focus{border-color:var(--accent)}
+textarea.inp{resize:vertical;min-height:80px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg label{flex:1;min-width:90px;border:1px solid var(--line);border-radius:var(--rs);padding:10px;cursor:pointer;text-align:center}
+.seg input{display:none}.seg label:has(input:checked){border-color:var(--accent);background:var(--mention-bg)}
+.check{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+
+/* avatars */
+.av{width:40px;height:40px;border-radius:50%;flex:none;object-fit:cover;background:var(--panel2);display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px;overflow:hidden;position:relative}
+.av.sm{width:28px;height:28px;font-size:11px}.av.xs{width:20px;height:20px;font-size:9px}.av.lg{width:84px;height:84px;font-size:30px}.av.xl{width:120px;height:120px;font-size:42px}
+.av img{width:100%;height:100%;object-fit:cover}
+.dotwrap{position:relative;flex:none}
+.pdot{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;border:2.5px solid var(--bg2);background:var(--faint)}
+.pdot.online{background:var(--ok)}.pdot.idle{background:var(--idle)}
+
+/* shell */
+#shell{display:grid;grid-template-columns:76px 256px minmax(0,1fr) 268px;height:100dvh}
+#shell.noside{grid-template-columns:76px 0 minmax(0,1fr) 0}
+#shell.noright{grid-template-columns:76px 256px minmax(0,1fr) 0}
+#shell.noside.noright{grid-template-columns:76px 0 minmax(0,1fr) 0}
+#rail{background:var(--bg);padding:calc(10px + var(--sat)) 0 10px;display:flex;flex-direction:column;align-items:center;gap:6px;overflow-y:auto;scrollbar-width:none}
+#rail::-webkit-scrollbar{display:none}
+.rl{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:20px;background:var(--bg2);color:var(--muted);position:relative;transition:.15s;flex:none}
+.rl:hover,.rl.on{border-radius:13px;background:var(--panel);color:var(--text)}
+.rl.on::before{content:"";position:absolute;left:-14px;width:4px;height:28px;border-radius:0 4px 4px 0;background:var(--accent)}
+.rl img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.rl .ini{font-family:var(--display);font-weight:700;font-size:17px;color:var(--text)}
+.badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--rose);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.rail-sep{width:30px;height:2px;border-radius:2px;background:var(--line);margin:4px 0;flex:none}
+.rl.add{color:var(--ok);font-size:24px}
+#side{background:var(--bg2);display:flex;flex-direction:column;min-width:0;overflow:hidden;border-right:1px solid var(--line)}
+#main{background:var(--bg3);display:flex;flex-direction:column;min-width:0;overflow:hidden;position:relative}
+#right{background:var(--bg2);overflow:hidden;display:flex;flex-direction:column;border-left:1px solid var(--line);min-width:0}
+#nav{display:none}
+
+/* sidebar */
+.side-head{padding:calc(14px + var(--sat)) 14px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.side-head .t{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.15}
+.world-banner{height:96px;background:var(--panel) center/cover;position:relative}
+.world-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,var(--bg2))}
+.side-scroll{flex:1;overflow-y:auto;padding:8px 8px 20px}
+.grp{display:flex;align-items:center;gap:6px;padding:16px 8px 6px;font-size:.72em;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--faint)}
+.grp .ibtn{width:24px;height:24px;font-size:16px;margin-left:auto}
+.ch{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;color:var(--muted);cursor:pointer;min-height:38px}
+.ch:hover{background:var(--panel);color:var(--text)}
+.ch.on{background:var(--panel2);color:var(--text);font-weight:500}
+.ch .ic{width:20px;text-align:center;flex:none;opacity:.85}
+.ch .gear{opacity:0;margin-left:auto;font-size:14px;padding:2px 4px}
+.ch:hover .gear,.ch.on .gear{opacity:.7}
+.ch.scene{padding-left:30px;font-size:.92em;min-height:32px}
+.me-card{padding:10px 12px calc(10px + var(--sab));border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;background:var(--bg)}
+.wstrip{display:none}
+
+/* main headers */
+.mhead{min-height:58px;padding:calc(8px + var(--sat)) 12px 8px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;background:var(--bg3);flex:none;z-index:2}
+.mhead .title{font-weight:700;font-size:16px}
+.mhead .sub{font-size:.8em;color:var(--muted)}
+.back{display:none}
+.playas{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 5px;border-radius:999px;background:var(--panel);border:1px solid var(--line);max-width:240px;flex:none}
+.playas:hover{border-color:var(--accent)}
+.playas .lbl{font-size:.72em;color:var(--muted);line-height:1}
+.playas .nm{font-weight:700;font-size:.92em;line-height:1.15}
+.page{flex:1;overflow-y:auto;padding:28px clamp(16px,4vw,48px) calc(40px + var(--sab))}
+.page h1{font-family:var(--display);font-size:clamp(26px,4vw,36px);margin:0 0 6px;letter-spacing:-.02em}
+.page h2{font-family:var(--display);font-size:20px;margin:28px 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.wcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:.15s;text-align:left;display:flex;flex-direction:column}
+.wcard:hover{transform:translateY(-2px);border-color:var(--accent)}
+.wcard .cov{height:110px;background:var(--panel2) center/cover;display:grid;place-items:center;font-family:var(--display);font-size:38px;font-weight:700;color:var(--muted)}
+.wcard .bd{padding:12px 14px 14px}
+.wcard .nm{font-weight:700;font-size:16px}
+.wcard .ds{color:var(--muted);font-size:.88em;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ccard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;cursor:pointer;transition:.15s;position:relative}
+.ccard:hover{border-color:var(--accent)}
+.ccard .av{border:3px solid var(--cc,var(--line))}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.74em;padding:3px 9px;border-radius:999px;background:var(--panel2);color:var(--muted);font-weight:500}
+.newcard{border-style:dashed;justify-content:center;color:var(--muted);min-height:180px}
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty .big{font-size:44px;margin-bottom:8px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.flow span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.85em}
+
+/* messages */
+#msgs{flex:1;overflow-y:auto;padding:16px 0 8px;overflow-anchor:none}
+.daysep{display:flex;align-items:center;gap:12px;margin:18px 16px 8px;font-size:.75em;color:var(--faint);font-weight:700;letter-spacing:.05em}
+.daysep::before,.daysep::after{content:"";flex:1;height:1px;background:var(--line)}
+.msg{display:grid;grid-template-columns:44px 1fr;column-gap:12px;padding:6px 18px 2px;position:relative}
+.msg.grouped{padding-top:1px}
+.msg:hover{background:color-mix(in srgb,var(--panel) 45%,transparent)}
+.msg.hl{animation:hl 2.2s ease}
+@keyframes hl{0%,40%{background:var(--mention-bg)}100%{background:transparent}}
+.msg.mentioned{background:var(--mention-bg);box-shadow:inset 3px 0 var(--accent)}
+.msg .gut{grid-column:1;grid-row:1/span 3;padding-top:2px}
+.msg .mc{grid-column:2;min-width:0}
+.msg.grouped .gut{font-size:.68em;color:var(--faint);opacity:0;text-align:right;padding-top:5px}
+.msg.grouped:hover .gut{opacity:1}
+.msg .meta{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.msg .who{font-weight:700;cursor:pointer;color:var(--nc,var(--text))}
+.msg .who:hover{text-decoration:underline}
+.msg .pb{font-size:.74em;color:var(--faint);cursor:pointer}
+.msg .pb:hover{color:var(--muted)}
+.msg .tm{font-size:.72em;color:var(--faint)}
+.tag{font-size:.66em;font-weight:700;letter-spacing:.06em;padding:1px 6px;border-radius:5px;background:var(--panel2);color:var(--muted);text-transform:uppercase}
+.body{white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere;min-width:0}
+.body em{font-style:italic}
+.body .dlg{color:var(--dlg)}
+.body .q{display:inline-block;border-left:3px solid var(--line);padding-left:10px;color:var(--muted)}
+.body code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:.9em}
+.body .mention{background:var(--mention-bg);color:var(--accent);padding:0 3px;border-radius:5px;font-weight:500;cursor:pointer}
+.body .spoiler{background:var(--text);color:transparent;border-radius:4px;cursor:pointer}.body .spoiler.open{background:var(--panel2);color:inherit}
+.edited{font-size:.7em;color:var(--faint);margin-left:4px}
+.deleted{color:var(--faint);font-style:italic;font-size:.9em}
+.rep{display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--muted);margin:0 0 3px;cursor:pointer;min-width:0;grid-column:2}
+.rep::before{content:"↱";color:var(--faint)}
+.rep b{color:var(--text);font-weight:500;flex:none}
+.atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.atts img{max-width:min(360px,100%);max-height:320px;border-radius:12px;cursor:zoom-in;background:var(--panel2);object-fit:cover}
+.fcard{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;max-width:340px;text-decoration:none;color:var(--text)}
+.rx{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.rx button{display:inline-flex;gap:5px;align-items:center;height:28px;padding:0 9px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:.86em}
+.rx button.mine{border-color:var(--accent);background:var(--mention-bg)}
+.mact{position:absolute;right:14px;top:-14px;display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:2px;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:3}
+.msg:hover .mact{display:flex}
+.mact button{width:32px;height:32px;border-radius:8px;font-size:15px}
+.mact button:hover{background:var(--panel2)}
+.loadmore{display:block;margin:4px auto 12px}
+.chan-intro{padding:28px 18px 10px}
+.chan-intro .big{width:60px;height:60px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:28px;margin-bottom:10px}
+
+/* composer */
+#typing{height:20px;padding:0 20px;font-size:.78em;color:var(--muted);flex:none}
+.composer{padding:0 14px calc(12px + var(--sab));flex:none}
+.cbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:6px;display:flex;flex-direction:column}
+.cbox:focus-within{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.crow{display:flex;align-items:flex-end;gap:4px}
+.cchip{display:flex;align-items:center;gap:6px;height:40px;padding:0 10px 0 4px;border-radius:999px;background:var(--panel2);flex:none;max-width:44%}
+.cchip .nm{font-weight:700;font-size:.86em}
+#ctext{flex:1;min-width:0;border:0;outline:0;background:transparent;resize:none;padding:9px 6px;font-size:16px;line-height:1.4;max-height:40vh}
+.send{width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:18px;flex:none;font-weight:700}
+.cbar{display:flex;align-items:center;gap:8px;padding:4px 8px 6px;font-size:.8em;color:var(--muted)}
+.cbar b{color:var(--text)}
+.pend{display:flex;gap:8px;flex-wrap:wrap;padding:6px}
+.pend .pi{position:relative;width:72px;height:72px;border-radius:12px;background:var(--panel2);overflow:hidden;display:grid;place-items:center;font-size:.7em;text-align:center;padding:4px}
+.pend .pi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pend .pi button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px;z-index:1}
+.readonly-note{padding:14px;text-align:center;color:var(--muted);font-size:.9em;background:var(--panel);border-radius:14px}
+
+/* popovers / modals / sheets */
+#overlay{position:fixed;inset:0;background:rgba(5,3,8,.6);backdrop-filter:blur(3px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+#overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--line);border-radius:20px;width:min(520px,100%);max-height:min(88dvh,820px);display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:pop .18s ease}
+.modal.wide{width:min(720px,100%)}
+@keyframes pop{from{transform:scale(.97);opacity:0}}
+.mh{display:flex;align-items:center;gap:10px;padding:16px 16px 10px 20px}
+.mh .t{font-family:var(--display);font-weight:700;font-size:20px;flex:1}
+.mb{padding:4px 20px 20px;overflow-y:auto}
+.mf{display:flex;gap:8px;justify-content:flex-end;padding:12px 20px 18px;border-top:1px solid var(--line)}
+.pop{position:fixed;z-index:60;background:var(--bg2);border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.45);width:300px;max-height:70vh;overflow:auto;padding:6px;animation:pop .14s ease}
+.mi{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:10px;text-align:left;min-height:44px}
+.mi:hover,.mi.on{background:var(--panel)}
+.mi.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.mi .sub{font-size:.76em;color:var(--muted)}
+.mi.dz{color:var(--danger)}
+.ptitle{padding:8px 10px 4px;font-size:.72em;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--faint)}
+#toast{position:fixed;left:50%;bottom:calc(24px + var(--sab));transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.tst{background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);pointer-events:auto;cursor:pointer;max-width:90vw;animation:pop .2s}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:90;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:20px}
+#lightbox.open{display:flex}
+#lightbox img{max-width:100%;max-height:82dvh;border-radius:10px;object-fit:contain}
+#lightbox .lbbar{display:flex;gap:10px}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:22px}
+.lbnav.l{left:16px}.lbnav.r{right:16px}
+
+/* profile popup */
+.cp-hero{position:relative;margin:-4px -20px 0;height:150px;background:var(--panel) center/cover;border-radius:0}
+.cp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,var(--bg2))}
+.cp-av{margin:-62px 0 0;position:relative;z-index:1;border:4px solid var(--bg2)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:14px 0;font-size:.92em}
+.kv dt{color:var(--muted);font-weight:500}.kv dd{margin:0}
+.sect{margin:18px 0 6px;font-size:.72em;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--faint)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.gal .gi{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--panel2);cursor:zoom-in}
+.gal .gi img{width:100%;height:100%;object-fit:cover}
+.gal .gi .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px}
+.gal .gi .star{position:absolute;bottom:4px;left:4px;height:22px;padding:0 7px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font-size:11px}
+.gal .add{display:grid;place-items:center;border:1px dashed var(--line);color:var(--muted);font-size:26px;cursor:pointer}
+.prose{white-space:pre-wrap;color:var(--text);opacity:.92}
+
+/* right panel */
+.rtabs{display:flex;gap:4px;padding:calc(12px + var(--sat)) 10px 8px;border-bottom:1px solid var(--line)}
+.rtabs button{flex:1;height:34px;border-radius:9px;color:var(--muted);font-weight:500;font-size:.9em}
+.rtabs button.on{background:var(--panel);color:var(--text)}
+.mem{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;cursor:pointer}
+.mem:hover{background:var(--panel)}
+.mem.off{opacity:.55}
+.rolechip{font-size:.66em;padding:1px 6px;border-radius:5px;background:var(--panel2);color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+
+/* notifications */
+.nitem{display:flex;gap:12px;padding:12px;border-radius:14px;cursor:pointer;align-items:flex-start;border:1px solid transparent}
+.nitem:hover{background:var(--panel)}
+.nitem.unread{background:color-mix(in srgb,var(--accent) 7%,transparent);border-color:color-mix(in srgb,var(--accent) 25%,transparent)}
+.nitem .ico{width:40px;height:40px;border-radius:12px;background:var(--panel2);display:grid;place-items:center;font-size:19px;flex:none}
+.sres{padding:12px;border-radius:12px;cursor:pointer;border:1px solid var(--line);margin-bottom:8px;background:var(--panel)}
+.sres:hover{border-color:var(--accent)}
+
+/* auth */
+.auth{min-height:100dvh;display:grid;grid-template-columns:1.1fr 1fr}
+.auth .art{background:radial-gradient(120% 80% at 20% 10%,#3a2346 0%,transparent 60%),radial-gradient(90% 70% at 90% 90%,#4a2b14 0%,transparent 55%),var(--bg);padding:48px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.auth .art h1{font-family:var(--display);font-size:clamp(36px,5vw,64px);line-height:1.02;margin:0 0 16px;letter-spacing:-.03em;max-width:12ch}
+.auth .art h1 em{color:var(--accent);font-style:italic}
+.auth .demo{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;max-width:440px;margin-bottom:28px;backdrop-filter:blur(6px)}
+.auth .demo .msg{padding:6px 0;grid-template-columns:36px 1fr}
+.auth .demo .av{width:36px;height:36px}
+.auth .form{display:flex;align-items:center;justify-content:center;padding:32px 20px}
+.auth .form>div{width:min(380px,100%)}
+.logo{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.logo i{font-style:normal;width:34px;height:34px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:18px}
+.switch-link{background:none;color:var(--accent);font-weight:500}
+.err{color:var(--danger);font-size:.88em;min-height:1.2em;margin:6px 0}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.center{display:grid;place-items:center;height:100dvh}
+
+/* ========== MOBILE ========== */
+@media (max-width:820px){
+  #shell,#shell.noside,#shell.noright,#shell.noside.noright{display:block;height:100dvh;position:relative;overflow:hidden}
+  #rail{display:none}
+  #side,#main{position:absolute;inset:0;border:0}
+  #side{z-index:2;bottom:calc(60px + var(--sab))}
+  #main{z-index:1;bottom:calc(60px + var(--sab))}
+  #shell[data-mpane="side"] #main{visibility:hidden}
+  #shell[data-mpane="main"] #side{visibility:hidden}
+  #shell.chatting #main{bottom:0;z-index:5}
+  #shell.chatting #nav{display:none}
+  #right{position:fixed;top:0;right:0;bottom:0;width:min(86vw,340px);z-index:40;transform:translateX(105%);transition:transform .22s ease;box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+  #right.open{transform:none}
+  #nav{display:flex;position:fixed;left:0;right:0;bottom:0;height:calc(60px + var(--sab));padding-bottom:var(--sab);background:var(--bg);border-top:1px solid var(--line);z-index:10}
+  #nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;color:var(--faint);position:relative}
+  #nav button .e{font-size:21px;filter:grayscale(.6);opacity:.75}
+  #nav button.on{color:var(--text)}#nav button.on .e{filter:none;opacity:1}
+  #nav .badge{top:4px;right:calc(50% - 22px)}
+  .back{display:inline-grid}
+  .me-card{display:none}
+  .wstrip{display:flex;gap:8px;overflow-x:auto;padding:calc(10px + var(--sat)) 12px 10px;border-bottom:1px solid var(--line);scrollbar-width:none;flex:none}
+  .wstrip::-webkit-scrollbar{display:none}
+  .wstrip .rl{width:44px;height:44px}
+  .wstrip .rl.on::before{display:none}.wstrip .rl.on{box-shadow:0 0 0 2px var(--accent)}
+  .side-head{padding-top:12px}
+  .mhead{padding-left:6px}
+  .mhead .sub{display:none}
+  .msg{padding:6px 12px 2px;grid-template-columns:38px 1fr;column-gap:10px}
+  .msg .av{width:38px;height:38px}
+  .mact{display:none!important}
+  .playas{max-width:150px;padding-right:10px}
+  .playas .lbl{display:none}
+  .composer{padding:0 8px calc(8px + var(--sab))}
+  #overlay{align-items:flex-end;padding:0}
+  .modal{width:100%;border-radius:22px 22px 0 0;max-height:92dvh;animation:up .22s ease;padding-bottom:var(--sab)}
+  .modal.wide{width:100%}
+  @keyframes up{from{transform:translateY(40%);opacity:.4}}
+  .pop{left:8px!important;right:8px!important;width:auto;max-height:60dvh;border-radius:20px}
+  html.app,html.app body{position:fixed;inset:0;overflow:hidden}
+  #shell,#shell.noside,#shell.noright,#shell.noside.noright{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100dvh)}
+  #overlay{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100dvh)}
+  .auth{grid-template-columns:1fr}
+  .auth .art{min-height:0;padding:calc(64px + var(--sat)) 20px 8px}
+  .auth .demo{display:none}
+  .auth .art h1{font-size:30px;margin-bottom:8px}
+  .auth .art p{font-size:.9em}
+  .auth .form{align-items:flex-start;padding:20px 20px calc(40px + var(--sab))}
+  .page{padding:calc(18px + var(--sat)) 16px calc(30px + var(--sab))}
+  .cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+}
+</style>
+</head>
+<body>
+<div id="app"><div class="center"><div class="spin"></div></div></div>
+<div id="overlay"></div>
+<div id="toast"></div>
+<div id="lightbox"><button class="lbnav l" data-act="lb-prev">‹</button><img alt=""><div class="lbbar"><a class="btn sm" target="_blank" rel="noopener">Open original</a><button class="btn sm" data-act="lb-close">Close</button></div><button class="lbnav r" data-act="lb-next">›</button></div>
+<input type="file" id="fileImg" accept="image/*" multiple hidden>
+<input type="file" id="fileAny" multiple hidden>
+
+<script type="module">
+/* =====================================================================
+   CAST — a roleplay platform for humans.
+   1) Paste your Supabase Project URL and anon public key below.
+   2) Run schema.sql in Supabase once.
+   ===================================================================== */
+const CONFIG = {
+  SUPABASE_URL: 'https://cbhcqtayqdjluygjwsxr.supabase.co',        // e.g. 'https://abcdxyz.supabase.co'
+  SUPABASE_ANON_KEY: 'sb_publishable_opuwemaktWr9O8iRi7mH2w_-_2Veayl',   // the "anon public" key from Project Settings → API
+};
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+/* ---------- tiny helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const isMobile = () => matchMedia('(max-width:820px)').matches;
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem('cast_' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('cast_' + k, JSON.stringify(v)); } catch {} },
+};
+const RANK = { owner: 5, admin: 4, moderator: 3, member: 2, guest: 1 };
+const ROLE_META = { owner: ['👑', 'Owner'], admin: ['🛠️', 'Admin'], moderator: ['🛡️', 'Moderator'], member: ['👤', 'Member'], guest: ['👁️', 'Guest'] };
+const QUICK = ['❤️', '😂', '😭', '🔥', '👍', '👀'];
+const MORE_EMO = ['❤️', '😂', '😭', '🔥', '👍', '👀', '😳', '🥺', '💀', '✨', '😤', '🙏', '💔', '😈', '🤝', '😮', '🎭', '⚔️'];
+const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+function av(url, name, cls = '') {
+  if (url) return `<div class="av ${cls}"><img src="${esc(url)}" alt="" loading="lazy"></div>`;
+  return `<div class="av ${cls}" style="background:hsl(${hue(name)} 38% 38%)">${esc(initials(name))}</div>`;
+}
+function fmtSize(b) { return b > 1e6 ? (b / 1e6).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1e3)) + ' KB'; }
+function fmtTime(ts) {
+  const d = new Date(ts), now = new Date();
+  const t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  if (d.toDateString() === now.toDateString()) return 'Today at ' + t;
+  const y = new Date(now); y.setDate(now.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return 'Yesterday at ' + t;
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric' }) + ' ' + t;
+}
+function fmtDay(ts) { return new Date(ts).toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); }
+function ago(ts) {
+  const s = (Date.now() - new Date(ts)) / 1000;
+  if (s < 60) return 'now'; if (s < 3600) return Math.floor(s / 60) + 'm'; if (s < 86400) return Math.floor(s / 3600) + 'h';
+  if (s < 604800) return Math.floor(s / 86400) + 'd'; return new Date(ts).toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+function toast(msg, onClick) {
+  const el = document.createElement('div'); el.className = 'tst'; el.textContent = msg;
+  if (onClick) el.onclick = () => { onClick(); el.remove(); };
+  $('#toast').appendChild(el); setTimeout(() => el.remove(), 4200);
+}
+function errMsg(e) { return e?.message || e?.error_description || String(e); }
+const slug = s => String(s).toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'channel';
+
+/* RP-aware formatting: *actions*, "dialogue", **bold**, ~~strike~~, ||spoilers||, > quotes, links, @mentions */
+function fmt(text, mentions = []) {
+  let h = esc(text);
+  const links = [];
+  h = h.replace(/https?:\/\/(?:(?!&quot;|&lt;|&gt;|&#39;)[^\s<])+/g, u => {
+    let tail = ''; const m = u.match(/[.,;:!?)\]]+$/); if (m) { tail = m[0]; u = u.slice(0, -tail.length); }
+    links.push(u); return `\u0001${links.length - 1}\u0001` + tail;
+  });
+  h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>')
+    .replace(/(^|[^\w*])\*([^*\n]+?)\*(?![\w*])/g, '$1<em>$2</em>')
+    .replace(/(^|[^\w])_([^_\n]+?)_(?!\w)/g, '$1<em>$2</em>')
+    .replace(/~~([^~\n]+)~~/g, '<s>$1</s>')
+    .replace(/\|\|([^|\n]+)\|\|/g, '<span class="spoiler" data-act="spoil">$1</span>')
+    .replace(/(&quot;|“)([^\n]*?)(&quot;|”)/g, '<span class="dlg">$1$2$3</span>');
+  h = h.split('\n').map(l => l.startsWith('&gt; ') ? `<span class="q">${l.slice(5)}</span>` : l).join('\n');
+  for (const m of mentions) {
+    if (!m?.l) continue;
+    const tok = '@' + esc(m.l);
+    h = h.split(tok).join(`<span class="mention" data-act="${m.c ? 'char' : 'user'}" data-id="${esc(m.c || m.u)}">${tok}</span>`);
+  }
+  h = h.replace(/\u0001(\d+)\u0001/g, (_, i) => { const u = links[+i]; return `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`; });
+  return h;
+}
+
+/* ---------- state ---------- */
+let sb, me = null;
+const S = {
+  tab: 'home', mpane: 'main',
+  worlds: [], role: {}, world: null, channels: [], members: [], worldChars: [], blocks: new Set(), follows: new Set(),
+  chan: null, msgs: [], hasMore: true, loadingMsgs: false, extraMsgs: {},
+  profiles: {}, chars: {}, myChars: [], dms: [], notifs: [], presence: {}, typing: {},
+  replyTo: null, editing: null, pending: [], mentionPicks: [], showRight: LS.get('showRight', true), rightTab: 'members',
+  publicWorlds: [], discoverQ: '',
+};
+let room = null, worldSub = null, presCh = null, notifSub = null, dmSub = null;
+
+/* ---------- boot ---------- */
+const URL_ = CONFIG.SUPABASE_URL || LS.get('url', '');
+const KEY_ = CONFIG.SUPABASE_ANON_KEY || LS.get('key', '');
+applyTheme();
+if (window.visualViewport) {
+  const vv = visualViewport;
+  const fit = () => {
+    const list = document.getElementById('msgs'); const pinned = list && list.scrollHeight - list.scrollTop - list.clientHeight < 160;
+    const r = document.documentElement.style; r.setProperty('--vvh', vv.height + 'px'); r.setProperty('--vvt', vv.offsetTop + 'px');
+    document.documentElement.classList.toggle('kb', isMobile() && vv.height < innerHeight * 0.8);
+    if (pinned) requestAnimationFrame(() => { list.scrollTop = list.scrollHeight; });
+  };
+  vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); fit();
+}
+document.addEventListener('focusin', e => {
+  const a = e.target; if (!isMobile() || !document.getElementById('shell') || a.id === 'ctext' || !a.matches?.('input,textarea')) return;
+  setTimeout(() => a.scrollIntoView({ block: 'nearest' }), 350);
+});
+if (!URL_ || !KEY_) renderSetup(); else boot();
+
+function applyTheme() {
+  const t = LS.get('theme', 'dark'); document.documentElement.dataset.theme = t;
+  const a = LS.get('accent', ''); if (a) document.documentElement.style.setProperty('--accent', a);
+  const fs = LS.get('fs', 15); document.documentElement.style.setProperty('--fs', fs + 'px');
+}
+
+function renderSetup() {
+  $('#app').innerHTML = `<div class="center"><div style="width:min(460px,92vw)">
+    <div class="logo" style="margin-bottom:18px"><i>🎭</i>Cast</div>
+    <h2 class="h-display" style="margin:0 0 6px">Connect your backend</h2>
+    <p class="muted small">Paste your Supabase project URL and anon key. For everyone to use the app, put these into the <code>CONFIG</code> block at the top of index.html — this box only saves them on this device for testing.</p>
+    <label class="field"><span>Project URL</span><input class="inp" id="su" placeholder="https://xxxx.supabase.co"></label>
+    <label class="field"><span>Anon public key</span><input class="inp" id="sk" placeholder="eyJhbGciOi..."></label>
+    <button class="btn primary" id="sgo" style="width:100%">Connect</button></div></div>`;
+  $('#sgo').onclick = () => { LS.set('url', $('#su').value.trim()); LS.set('key', $('#sk').value.trim()); location.reload(); };
+}
+
+async function boot() {
+  sb = createClient(URL_, KEY_, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  const { data: { session } } = await sb.auth.getSession();
+  sb.auth.onAuthStateChange((ev, sess) => {
+    if (ev === 'SIGNED_IN' && !me && sess) start(sess.user);
+    if (ev === 'SIGNED_OUT') location.reload();
+  });
+  if (session) start(session.user); else renderAuth();
+}
+
+/* ---------- auth ---------- */
+function renderAuth(mode = 'in') {
+  const demo = (n, c, col, body, pb) => `<div class="msg"><div class="gut">${av('', n)}</div><div><div class="meta"><span class="who" style="color:${col}">${n}</span><span class="pb">played by ${pb}</span></div><div class="body">${fmt(body)}</div></div></div>`;
+  $('#app').innerHTML = `<div class="auth">
+    <div class="art">
+      <div class="logo" style="position:absolute;top:calc(28px + var(--sat));left:28px"><i>🎭</i>Cast</div>
+      <div class="demo">
+        ${demo('Mia Thompson', '', '#f0a9b8', '*walks into the cafeteria and looks around.*\n"Has anyone seen Jayden?"', 'Kruz')}
+        ${demo('Jayden', '', '#9fc8f2', '*looks up from his phone.* "You mean me?"', 'Alex')}
+      </div>
+      <h1>Your characters. <em>Your worlds.</em> Together.</h1>
+      <p class="muted" style="max-width:46ch;margin:0">Worlds, channels, characters and instant switching. No bots, no proxy commands — pick who you're playing and write.</p>
+    </div>
+    <div class="form"><div>
+      <h2 class="h-display" style="font-size:28px;margin:0 0 4px">${mode === 'in' ? 'Welcome back' : 'Create your account'}</h2>
+      <p class="muted small" style="margin:0 0 20px">${mode === 'in' ? 'Sign in to get back to your worlds.' : 'Takes ten seconds. Your characters follow you everywhere.'}</p>
+      ${mode === 'up' ? `<label class="field"><span>Username</span><input class="inp" id="au" autocomplete="username" placeholder="kruz"></label>` : ''}
+      <label class="field"><span>Email</span><input class="inp" id="ae" type="email" autocomplete="email"></label>
+      <label class="field"><span>Password</span><input class="inp" id="ap" type="password" autocomplete="${mode === 'in' ? 'current-password' : 'new-password'}"></label>
+      <div class="err" id="aerr"></div>
+      <button class="btn primary" id="ago" style="width:100%">${mode === 'in' ? 'Sign in' : 'Create account'}</button>
+      <p class="small muted" style="text-align:center;margin-top:16px">${mode === 'in' ? 'New here?' : 'Already have an account?'} <button class="switch-link" id="asw">${mode === 'in' ? 'Create an account' : 'Sign in'}</button></p>
+      ${mode === 'in' ? `<p class="small" style="text-align:center"><button class="switch-link" id="afp">Forgot password?</button></p>` : ''}
+    </div></div></div>`;
+  $('#asw').onclick = () => renderAuth(mode === 'in' ? 'up' : 'in');
+  $('#afp') && ($('#afp').onclick = async () => {
+    const email = $('#ae').value.trim(); if (!email) return $('#aerr').textContent = 'Type your email first.';
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    $('#aerr').textContent = error ? errMsg(error) : 'Check your inbox for a reset link.';
+  });
+  const go = async () => {
+    const email = $('#ae').value.trim(), password = $('#ap').value; $('#aerr').textContent = '';
+    $('#ago').disabled = true;
+    try {
+      if (mode === 'in') {
+        const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw error;
+      } else {
+        const username = $('#au').value.trim().replace(/[^a-zA-Z0-9_]/g, '');
+        if (username.length < 2) throw new Error('Username needs at least 2 letters or numbers.');
+        if (password.length < 6) throw new Error('Password needs at least 6 characters.');
+        const { data, error } = await sb.auth.signUp({ email, password, options: { data: { username, display_name: username }, emailRedirectTo: location.origin + location.pathname } });
+        if (error) throw error;
+        if (!data.session) { $('#aerr').style.color = 'var(--ok)'; $('#aerr').textContent = 'Check your email to confirm your account, then sign in.'; }
+      }
+    } catch (e) { $('#aerr').style.color = ''; $('#aerr').textContent = errMsg(e); }
+    $('#ago').disabled = false;
+  };
+  $('#ago').onclick = go;
+  $$('.auth input').forEach(i => i.addEventListener('keydown', e => e.key === 'Enter' && go()));
+}
+
+/* ---------- start (signed in) ---------- */
+let started = false;
+async function start(user) {
+  if (started) return; started = true;
+  let tries = 0;
+  while (!me && tries < 6) {
+    const { data } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (data) me = data; else { tries++; await new Promise(r => setTimeout(r, 500)); }
+  }
+  if (!me) { $('#app').innerHTML = `<div class="center"><div class="empty"><div class="big">⚠️</div>Your profile wasn't found. Did you run <b>schema.sql</b> in Supabase?<br><br><button class="btn" onclick="location.reload()">Retry</button></div></div>`; return; }
+  S.profiles[me.id] = me;
+  document.documentElement.classList.add('app');
+  $('#app').innerHTML = `<div id="shell"><nav id="rail"></nav><aside id="side"></aside><main id="main"></main><aside id="right"></aside><nav id="nav"></nav></div>`;
+  await Promise.all([loadWorlds(), loadMyChars(), loadDMs(), loadNotifs()]);
+  startPresence(); subscribeGlobal();
+  const join = (location.hash.match(/join=([\w-]+)/) || [])[1];
+  if (join) { history.replaceState(null, '', location.pathname); showJoinPreview(join); }
+  const last = LS.get('lastWorld', null);
+  if (!isMobile() && last && S.worlds.find(w => w.id === last)) await openWorld(last);
+  else render();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) catchUp(); });
+}
+
+async function loadWorlds() {
+  const { data, error } = await sb.from('world_members').select('role, worlds(*)').eq('user_id', me.id);
+  if (error) return toast(errMsg(error));
+  S.worlds = (data || []).filter(r => r.worlds).map(r => r.worlds).sort((a, b) => a.name.localeCompare(b.name));
+  S.role = {}; (data || []).forEach(r => r.worlds && (S.role[r.worlds.id] = r.role));
+}
+async function loadMyChars() {
+  const { data } = await sb.from('characters').select('*').eq('owner_id', me.id).order('created_at');
+  S.myChars = data || []; S.myChars.forEach(c => S.chars[c.id] = c);
+}
+async function loadDMs() {
+  const { data } = await sb.from('dm_threads').select('*').order('last_at', { ascending: false });
+  S.dms = data || [];
+  await ensureProfiles(S.dms.flatMap(d => d.members));
+  await ensureChars(S.dms.flatMap(d => [d.char_a, d.char_b]).filter(Boolean));
+}
+async function loadNotifs() {
+  const { data } = await sb.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
+  S.notifs = data || [];
+}
+async function ensureProfiles(ids) {
+  const need = [...new Set(ids)].filter(id => id && !S.profiles[id]);
+  if (!need.length) return;
+  const { data } = await sb.from('profiles').select('*').in('id', need);
+  (data || []).forEach(p => S.profiles[p.id] = p);
+}
+async function ensureChars(ids) {
+  const need = [...new Set(ids)].filter(id => id && !S.chars[id]);
+  if (!need.length) return;
+  const { data } = await sb.from('characters').select('*').in('id', need);
+  (data || []).forEach(c => S.chars[c.id] = c);
+}
+const pname = id => { const p = S.profiles[id]; return p ? (p.display_name || p.username) : 'Someone'; };
+const myRank = (w = S.world?.id) => RANK[S.role[w]] || 0;
+
+/* ---------- presence (real, via Supabase Realtime) ---------- */
+let idleTimer, myStatus = 'online';
+function startPresence() {
+  presCh = sb.channel('cast-presence', { config: { presence: { key: me.id } } });
+  presCh.on('presence', { event: 'sync' }, () => {
+    const st = presCh.presenceState(); S.presence = {};
+    for (const k in st) S.presence[k] = st[k].some(x => x.status === 'online') ? 'online' : 'idle';
+    renderRight(); if (S.tab === 'messages') renderSide();
+  }).subscribe(s => { if (s === 'SUBSCRIBED') presCh.track({ status: myStatus }); });
+  const setStatus = st => { if (st !== myStatus) { myStatus = st; presCh.track({ status: st }); } };
+  const bump = () => { setStatus(document.hidden ? 'idle' : 'online'); clearTimeout(idleTimer); idleTimer = setTimeout(() => setStatus('idle'), 5 * 60e3); };
+  ['pointerdown', 'keydown', 'touchstart', 'focus'].forEach(e => addEventListener(e, bump, { passive: true }));
+  document.addEventListener('visibilitychange', bump); bump();
+}
+const statusOf = id => S.presence[id] || 'offline';
+const pdot = id => `<span class="pdot ${statusOf(id)}"></span>`;
+
+/* ---------- global realtime subscriptions ---------- */
+function subscribeGlobal() {
+  notifSub = sb.channel('notif-' + me.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${me.id}` }, async p => {
+      const n = p.new;
+      if (S.chan && ((n.channel_id && n.channel_id === S.chan.id) || (n.dm_id && n.dm_id === S.chan.id)) && !document.hidden && n.kind !== 'invite') {
+        await sb.from('notifications').update({ read: true }).eq('id', n.id); n.read = true;
+      } else toast(({ invite: '🏫 ', dm: '💬 ', mention: '@ ', reply: '↩️ ', follow: '🔔 ' }[n.kind] || '') + n.body, () => openNotif(n));
+      S.notifs.unshift(n); renderRail(); renderNav(); if (S.tab === 'notifs') renderMain();
+      if (n.kind === 'dm' || n.kind === 'invite') { loadDMs().then(() => S.tab === 'messages' && renderSide()); }
+    }).subscribe();
+  dmSub = sb.channel('dms-' + me.id)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'dm_threads' }, () => loadDMs().then(() => S.tab === 'messages' && renderSide()))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'world_members', filter: `user_id=eq.${me.id}` }, async () => { await loadWorlds(); renderRail(); })
+    .subscribe();
+}
+
+/* ---------- navigation ---------- */
+function setTab(t) {
+  S.tab = t;
+  if (t !== 'world') { if (t !== 'messages' || !S.chan?._dm) closeChat(); }
+  S.mpane = (t === 'messages' && !S.chan) ? 'side' : 'main';
+  if (t === 'worlds') loadPublic();
+  render();
+}
+function closeChat() { if (room) { sb.removeChannel(room); room = null; } S.chan = null; S.msgs = []; S.replyTo = null; S.editing = null; S.pending = []; }
+
+async function openWorld(id, chanId) {
+  const w = S.worlds.find(x => x.id === id); if (!w) return;
+  if (S.world?.id !== id) {
+    closeChat(); S.world = w; LS.set('lastWorld', id);
+    await loadWorldData();
+    if (!S.world) return render();
+    if (worldSub) sb.removeChannel(worldSub);
+    let t; const reload = () => { clearTimeout(t); t = setTimeout(async () => { if (!S.world) return; await loadWorldData(); render(); if (S.chan) { renderChatHeader(); } }, 300); };
+    worldSub = sb.channel('world-' + id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'channels', filter: `world_id=eq.${id}` }, reload)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'world_members', filter: `world_id=eq.${id}` }, reload)
+      .subscribe();
+  }
+  S.tab = 'world';
+  const pick = chanId || (!isMobile() && (LS.get('lastChan', {})[id] || S.channels.find(c => !c.archived && !c.parent_id)?.id));
+  const ch = S.channels.find(c => c.id === pick);
+  if (ch) await openChannel(ch); else { S.mpane = 'side'; render(); }
+}
+async function loadWorldData() {
+  const id = S.world.id;
+  const [ch, mem, bl, fo, wd] = await Promise.all([
+    sb.from('channels').select('*').eq('world_id', id).order('position').order('created_at'),
+    sb.from('world_members').select('user_id, role, joined_at').eq('world_id', id),
+    sb.from('world_char_blocks').select('character_id').eq('world_id', id),
+    sb.from('channel_follows').select('channel_id').eq('user_id', me.id),
+    sb.from('worlds').select('*').eq('id', id).maybeSingle(),
+  ]);
+  if (wd.data) { S.world = wd.data; const i = S.worlds.findIndex(w => w.id === id); if (i >= 0) S.worlds[i] = wd.data; }
+  S.channels = ch.data || []; S.members = mem.data || [];
+  const mine = S.members.find(m => m.user_id === me.id);
+  if (!mine) { toast('You are no longer in this world.'); S.world = null; await loadWorlds(); S.tab = 'home'; closeChat(); return; }
+  S.role[id] = mine.role;
+  S.blocks = new Set((bl.data || []).map(b => b.character_id));
+  S.follows = new Set((fo.data || []).map(f => f.channel_id));
+  await ensureProfiles(S.members.map(m => m.user_id));
+  const ids = S.members.map(m => m.user_id); let chars = [];
+  for (let i = 0; i < ids.length; i += 80) {
+    const { data } = await sb.from('characters').select('*').in('owner_id', ids.slice(i, i + 80));
+    chars = chars.concat(data || []);
+  }
+  chars.forEach(c => S.chars[c.id] = c); S.worldChars = chars;
+  if (S.chan && !S.chan._dm) { const fresh = S.channels.find(c => c.id === S.chan.id); if (fresh) S.chan = fresh; else { closeChat(); } }
+}
+
+async function openChannel(ch) {
+  if (room) { sb.removeChannel(room); room = null; }
+  S.chan = ch; S.msgs = []; S.hasMore = true; S.replyTo = null; S.editing = null; S.pending = []; S.typing = {};
+  if (!ch._dm) { const lc = LS.get('lastChan', {}); lc[S.world.id] = ch.id; LS.set('lastChan', lc); }
+  S.mpane = 'main';
+  renderAll(); renderChatShell();
+  await loadMessages();
+  subscribeRoom();
+  markChanRead();
+}
+async function openDM(thread) {
+  S.tab = 'messages'; S.world = null;
+  if (worldSub) { sb.removeChannel(worldSub); worldSub = null; }
+  await openChannel({ ...thread, _dm: true });
+}
+
+function subscribeRoom() {
+  const c = S.chan, col = c._dm ? 'dm_id' : 'channel_id';
+  room = sb.channel('room-' + c.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `${col}=eq.${c.id}` }, async p => {
+      if (S.chan?.id !== c.id) return; await addIncoming([p.new]);
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `${col}=eq.${c.id}` }, p => {
+      const i = S.msgs.findIndex(m => m.id === p.new.id); if (i >= 0) { S.msgs[i] = p.new; renderMsgs(); }
+    })
+    .on('broadcast', { event: 'typing' }, ({ payload }) => {
+      if (!payload || payload.u === me.id) return;
+      S.typing[payload.u] = { l: String(payload.l || '').slice(0, 60), t: Date.now() }; renderTyping();
+    })
+    .subscribe();
+}
+async function addIncoming(list) {
+  const fresh = list.filter(m => !S.msgs.some(x => x.id === m.id));
+  if (!fresh.length) return;
+  await ensureProfiles(fresh.map(m => m.author_id)); await ensureChars(fresh.map(m => m.character_id).filter(Boolean));
+  fresh.forEach(m => delete S.typing[m.author_id]);
+  S.msgs.push(...fresh); S.msgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  renderMsgs(); renderTyping();
+}
+async function catchUp() {
+  if (!S.chan || !S.msgs.length) return;
+  const col = S.chan._dm ? 'dm_id' : 'channel_id';
+  const last = S.msgs[S.msgs.length - 1].created_at;
+  const { data } = await sb.from('messages').select('*').eq(col, S.chan.id).gt('created_at', last).order('created_at').limit(200);
+  if (data?.length) addIncoming(data);
+  loadNotifs().then(() => { renderRail(); renderNav(); });
+}
+async function loadMessages(older = false) {
+  if (S.loadingMsgs || (older && !S.hasMore)) return; S.loadingMsgs = true;
+  const c = S.chan, col = c._dm ? 'dm_id' : 'channel_id';
+  let q = sb.from('messages').select('*').eq(col, c.id).order('created_at', { ascending: false }).limit(50);
+  if (older && S.msgs.length) q = q.lt('created_at', S.msgs[0].created_at);
+  const { data, error } = await q; S.loadingMsgs = false;
+  if (S.chan?.id !== c.id) return;
+  if (error) return toast(errMsg(error));
+  const rows = (data || []).reverse(); S.hasMore = (data || []).length === 50;
+  await hydrate(rows);
+  const list = $('#msgs'); const prevH = list?.scrollHeight || 0, prevTop = list?.scrollTop || 0;
+  S.msgs = older ? rows.concat(S.msgs) : rows;
+  renderMsgs(older ? 'keep' : 'bottom');
+  if (older && list) list.scrollTop = list.scrollHeight - prevH + prevTop;
+}
+async function hydrate(rows) {
+  await ensureProfiles(rows.map(m => m.author_id)); await ensureChars(rows.map(m => m.character_id).filter(Boolean));
+  const missing = rows.map(m => m.reply_to).filter(id => id && !rows.some(r => r.id === id) && !S.msgs.some(r => r.id === id) && !S.extraMsgs[id]);
+  if (missing.length) {
+    const { data } = await sb.from('messages').select('*').in('id', [...new Set(missing)]);
+    (data || []).forEach(m => S.extraMsgs[m.id] = m);
+    await ensureProfiles((data || []).map(m => m.author_id)); await ensureChars((data || []).map(m => m.character_id).filter(Boolean));
+  }
+}
+async function jumpTo(msgId, chanObj) {
+  if (chanObj && S.chan?.id !== chanObj.id) {
+    if (chanObj._dm) await openDM(chanObj); else if (chanObj.world_id) await openWorld(chanObj.world_id, chanObj.id);
+  }
+  let el = document.getElementById('m-' + msgId);
+  if (!el) {
+    const { data: target } = await sb.from('messages').select('*').eq('id', msgId).maybeSingle();
+    if (!target) return toast('That message is gone.');
+    const col = S.chan._dm ? 'dm_id' : 'channel_id';
+    const [b, a] = await Promise.all([
+      sb.from('messages').select('*').eq(col, S.chan.id).lte('created_at', target.created_at).order('created_at', { ascending: false }).limit(30),
+      sb.from('messages').select('*').eq(col, S.chan.id).gt('created_at', target.created_at).order('created_at').limit(200),
+    ]);
+    const rows = [...(b.data || []).reverse(), ...(a.data || [])];
+    await hydrate(rows); S.msgs = rows; S.hasMore = (b.data || []).length === 30; renderMsgs('keep');
+    el = document.getElementById('m-' + msgId);
+  }
+  if (el) { el.scrollIntoView({ block: 'center' }); el.classList.remove('hl'); void el.offsetWidth; el.classList.add('hl'); }
+}
+async function markChanRead() {
+  const c = S.chan; if (!c) return;
+  const ids = S.notifs.filter(n => !n.read && (n.channel_id === c.id || n.dm_id === c.id) && n.kind !== 'invite').map(n => n.id);
+  if (!ids.length) return;
+  ids.forEach(id => { const n = S.notifs.find(x => x.id === id); n.read = true; });
+  renderRail(); renderNav();
+  await sb.from('notifications').update({ read: true }).in('id', ids);
+}
+
+/* ---------- character availability ---------- */
+function usableChars() {
+  const c = S.chan; if (!c) return [];
+  const wid = c._dm ? c.world_id : S.world?.id;
+  const ok = ch => ch && !isBot(ch) && (!wid || !S.blocks.has(ch.id) || c._dm) && (ch.owner_id === me.id || ch.visibility === 'public' || (ch.visibility === 'restricted' && (ch.allowed_users || []).includes(me.id)));
+  const mine = S.myChars.filter(ok);
+  const others = (c._dm ? [] : S.worldChars).filter(ch => ch.owner_id !== me.id && ok(ch));
+  return { mine, others, all: [...mine, ...others] };
+}
+const isRP = () => S.chan && (S.chan._dm ? S.chan.kind === 'char' : S.chan.kind === 'rp');
+function playingKey() { return S.chan ? S.chan.id : ''; }
+function currentChar() {
+  if (!isRP()) return null;
+  const u = usableChars(), map = LS.get('play', {});
+  let id = map[playingKey()];
+  if (id === 'ooc') return null;
+  if (id && u.all.some(c => c.id === id)) return S.chars[id];
+  if (S.chan._dm) { const d = S.chan; id = [d.char_a, d.char_b].find(x => S.chars[x]?.owner_id === me.id); if (id && u.all.some(c => c.id === id)) return S.chars[id]; }
+  const wkey = 'w:' + (S.world?.id || ''); id = map[wkey];
+  if (id && u.all.some(c => c.id === id)) return S.chars[id];
+  return u.mine[0] || null;
+}
+function setPlaying(id) {
+  const map = LS.get('play', {}); map[playingKey()] = id; if (id !== 'ooc' && S.world) map['w:' + S.world.id] = id;
+  const rec = LS.get('recentChars', []).filter(x => x !== id); if (id !== 'ooc') rec.unshift(id); LS.set('recentChars', rec.slice(0, 12));
+  LS.set('play', map); renderChatHeader(); renderComposerChip(); updatePlaceholder();
+}
+
+/* ---------- rendering ---------- */
+function render() { renderAll(); renderMain(); }
+function renderAll() {
+  const shell = $('#shell'); if (!shell) return;
+  const sideOn = S.tab === 'world' || S.tab === 'messages';
+  const rightOn = S.tab === 'world' && S.chan && S.showRight;
+  shell.classList.toggle('noside', !sideOn);
+  shell.classList.toggle('noright', !rightOn || isMobile());
+  shell.dataset.mpane = S.mpane;
+  shell.classList.toggle('chatting', !!S.chan && S.mpane === 'main');
+  renderRail(); renderSide(); renderRight(); renderNav();
+}
+const unreadFor = wid => S.notifs.filter(n => !n.read && n.world_id === wid).length;
+const unreadTotal = () => S.notifs.filter(n => !n.read).length;
+const unreadDMs = () => S.notifs.filter(n => !n.read && n.kind === 'dm').length;
+function worldIcon(w, cls = '') {
+  const u = unreadFor(w.id);
+  return `<button class="rl ${cls} ${S.tab === 'world' && S.world?.id === w.id ? 'on' : ''}" data-act="world" data-id="${w.id}" title="${esc(w.name)}">
+    ${w.icon_url ? `<img src="${esc(w.icon_url)}" alt="">` : `<span class="ini">${esc(initials(w.name))}</span>`}${u ? `<span class="badge">${u > 99 ? '99+' : u}</span>` : ''}</button>`;
+}
+function renderRail() {
+  const r = $('#rail'); if (!r) return;
+  const n = unreadTotal(), d = unreadDMs();
+  const nb = (t, e, title, badge) => `<button class="rl ${S.tab === t ? 'on' : ''}" data-act="tab" data-tab="${t}" title="${title}">${e}${badge ? `<span class="badge">${badge > 99 ? '99+' : badge}</span>` : ''}</button>`;
+  r.innerHTML = nb('home', '🏠', 'Home') + nb('worlds', '🌎', 'Discover worlds') + nb('messages', '💬', 'Messages', d) + nb('characters', '🎭', 'Characters') + nb('notifs', '🔔', 'Notifications', n) +
+    `<div class="rail-sep"></div>` + S.worlds.map(w => worldIcon(w)).join('') +
+    `<button class="rl add" data-act="create-world" title="Create a world">＋</button><div style="flex:1"></div>` +
+    `<button class="rl ${S.tab === 'profile' ? 'on' : ''}" data-act="tab" data-tab="profile" title="Profile"><div class="dotwrap">${av(me.avatar_url, pname(me.id), 'sm')}${pdot(me.id).replace('pdot', 'pdot')}</div></button>`;
+}
+function renderNav() {
+  const n = $('#nav'); if (!n) return;
+  const it = (t, e, l, b) => `<button class="${(S.tab === t || (t === 'home' && S.tab === 'world')) ? 'on' : ''}" data-act="tab" data-tab="${t}"><span class="e">${e}</span>${l}${b ? `<span class="badge">${b > 99 ? '99+' : b}</span>` : ''}</button>`;
+  n.innerHTML = it('home', '🏠', 'Home') + it('worlds', '🌎', 'Worlds') + it('messages', '💬', 'Messages', unreadDMs()) + it('characters', '🎭', 'Characters') + it('notifs', '🔔', 'Alerts', unreadTotal()) + it('profile', '👤', 'Profile');
+}
+
+function chanIcon(c) { return c.private ? '🔒' : c.kind === 'rp' ? '🎭' : '#'; }
+function renderSide() {
+  const s = $('#side'); if (!s) return;
+  const strip = `<div class="wstrip"><button class="rl" data-act="tab" data-tab="home">🏠</button>${S.worlds.map(w => worldIcon(w)).join('')}<button class="rl add" data-act="create-world">＋</button></div>`;
+  if (S.tab === 'messages') {
+    s.innerHTML = `<div class="side-head" style="padding-top:calc(14px + var(--sat))"><div class="t grow">Messages</div><button class="ibtn" data-act="new-dm" title="New message">✏️</button></div>
+      <div class="side-scroll">${S.dms.length ? S.dms.map(dmRow).join('') : `<div class="empty small"><div class="big">💬</div>No conversations yet.<br><br><button class="btn sm primary" data-act="new-dm">New message</button></div>`}</div>${meCard()}`;
+    return;
+  }
+  if (S.tab !== 'world' || !S.world) { s.innerHTML = ''; return; }
+  const w = S.world, rk = myRank(), admin = rk >= 4;
+  const top = S.channels.filter(c => !c.parent_id);
+  const scenes = c => S.channels.filter(x => x.parent_id === c.id && !x.archived);
+  const row = (c, scene) => `<div class="ch ${scene ? 'scene' : ''} ${S.chan?.id === c.id ? 'on' : ''}" data-act="chan" data-id="${c.id}">
+      <span class="ic">${scene ? '🧵' : chanIcon(c)}</span><span class="ellip grow">${esc(c.name)}</span>
+      ${admin ? `<span class="gear" data-act="chan-settings" data-id="${c.id}" title="Channel settings">⚙</span>` : ''}</div>`;
+  const block = (title, list, kind) => list.length || (admin && kind) ? `<div class="grp">${title}${admin && kind ? `<button class="ibtn" data-act="add-chan" data-kind="${kind}" title="Add channel">＋</button>` : ''}</div>` + list.map(c => row(c) + scenes(c).map(x => row(x, true)).join('')).join('') : '';
+  const live = top.filter(c => !c.archived);
+  const arch = S.channels.filter(c => c.archived);
+  s.innerHTML = strip + (w.icon_url ? `<div class="world-banner" style="background-image:url('${esc(w.icon_url)}')"></div>` : '') +
+    `<div class="side-head" ${w.icon_url ? 'style="margin-top:-40px;position:relative;z-index:1;border:0"' : ''}><div class="grow"><div class="t ellip">${esc(w.name)}</div><div class="tiny muted">${ROLE_META[S.role[w.id]]?.join(' ') || ''} · ${S.members.length} member${S.members.length === 1 ? '' : 's'}</div></div>
+      <button class="ibtn" data-act="search" title="Search">🔎</button><button class="ibtn" data-act="world-menu" title="World menu">⋯</button></div>
+    <div class="side-scroll">
+      ${rk >= 2 ? `<button class="btn sm ghost" style="width:100%;margin:6px 0 2px" data-act="invite">＋ Invite people</button>` : ''}
+      ${block('💬 Text channels', live.filter(c => c.kind === 'text' && !c.private), 'text')}
+      ${block('🎭 Roleplay channels', live.filter(c => c.kind === 'rp' && !c.private), 'rp')}
+      ${block('🔒 Private channels', live.filter(c => c.private), admin ? 'private' : '')}
+      ${arch.length ? `<details style="margin-top:10px"><summary class="grp" style="cursor:pointer;list-style:none">🗄️ Archived (${arch.length})</summary>${arch.map(c => row(c)).join('')}</details>` : ''}
+    </div>${meCard()}`;
+}
+function meCard() {
+  return `<div class="me-card"><div class="dotwrap">${av(me.avatar_url, pname(me.id), 'sm')}${pdot(me.id)}</div><div class="grow"><div class="small ellip" style="font-weight:700">${esc(pname(me.id))}</div><div class="tiny faint ellip">@${esc(me.username)}</div></div><button class="ibtn" data-act="tab" data-tab="profile" title="Settings">⚙</button></div>`;
+}
+function dmTitle(d) {
+  const other = d.members.find(x => x !== me.id) || me.id;
+  if (d.kind === 'char') {
+    const a = S.chars[d.char_a], b = S.chars[d.char_b];
+    const mine = a?.owner_id === me.id ? a : b, theirs = mine === a ? b : a;
+    return { title: `${mine?.name || '?'} → ${theirs?.name || '?'}`, sub: `RP with ${pname(other)}`, av: theirs?.avatar_url, name: theirs?.name, other };
+  }
+  return { title: pname(other), sub: '@' + (S.profiles[other]?.username || ''), av: S.profiles[other]?.avatar_url, name: pname(other), other };
+}
+function dmRow(d) {
+  const t = dmTitle(d), un = S.notifs.some(n => !n.read && n.dm_id === d.id);
+  return `<div class="ch ${S.chan?.id === d.id ? 'on' : ''}" data-act="dm" data-id="${d.id}" style="min-height:52px">
+    <div class="dotwrap">${av(t.av, t.name, 'sm')}${pdot(t.other)}</div>
+    <div class="grow"><div class="ellip" style="${un ? 'font-weight:700;color:var(--text)' : ''}">${esc(t.title)}</div><div class="tiny faint ellip">${d.kind === 'char' ? '🎭 ' : ''}${esc(t.sub)}</div></div>
+    ${un ? '<span class="badge" style="position:static;border:0">•</span>' : ''}</div>`;
+}
+
+function renderRight() {
+  const r = $('#right'); if (!r) return;
+  if (S.tab !== 'world' || !S.world) { r.innerHTML = ''; return; }
+  const tabs = `<div class="rtabs"><button class="${S.rightTab === 'members' ? 'on' : ''}" data-act="rtab" data-t="members">Members</button><button class="${S.rightTab === 'chars' ? 'on' : ''}" data-act="rtab" data-t="chars">Characters</button>${isMobile() ? `<button class="ibtn" data-act="close-right" style="flex:none">✕</button>` : ''}</div>`;
+  let body = '';
+  if (S.rightTab === 'members') {
+    const order = ['owner', 'admin', 'moderator', 'member', 'guest'];
+    const sorted = [...S.members].sort((a, b) => (statusOf(a.user_id) === 'offline') - (statusOf(b.user_id) === 'offline') || order.indexOf(a.role) - order.indexOf(b.role) || pname(a.user_id).localeCompare(pname(b.user_id)));
+    const on = sorted.filter(m => statusOf(m.user_id) !== 'offline'), off = sorted.filter(m => statusOf(m.user_id) === 'offline');
+    const mr = m => `<div class="mem ${statusOf(m.user_id) === 'offline' ? 'off' : ''}" data-act="user" data-id="${m.user_id}"><div class="dotwrap">${av(S.profiles[m.user_id]?.avatar_url, pname(m.user_id), 'sm')}${pdot(m.user_id)}</div><div class="grow ellip">${esc(pname(m.user_id))}</div>${m.role !== 'member' ? `<span class="rolechip">${ROLE_META[m.role][0]}</span>` : ''}</div>`;
+    body = `<div class="grp">Online — ${on.length}</div>${on.map(mr).join('')}<div class="grp">Offline — ${off.length}</div>${off.map(mr).join('')}`;
+  } else {
+    const list = S.worldChars.filter(c => c.visibility !== 'private' || c.owner_id === me.id || true).sort((a, b) => a.name.localeCompare(b.name));
+    body = list.length ? list.map(c => `<div class="mem" data-act="char" data-id="${c.id}">${av(c.avatar_url, c.name, 'sm')}<div class="grow"><div class="ellip" style="color:${esc(c.color)};font-weight:700">${esc(c.name)}</div><div class="tiny faint ellip">played by ${esc(pname(c.owner_id))}${S.blocks.has(c.id) ? ' · blocked here' : ''}</div></div></div>`).join('') : `<div class="empty small">No characters yet.</div>`;
+  }
+  r.innerHTML = tabs + `<div class="side-scroll">${body}</div>`;
+}
+
+function renderMain() {
+  const m = $('#main'); if (!m) return;
+  if (S.chan) return; // chat shell handles itself
+  const back = isMobile() && S.tab === 'world' ? `<button class="btn sm ghost" data-act="mback" style="margin-bottom:14px">‹ Back</button>` : '';
+  if (S.tab === 'world') { m.innerHTML = `<div class="page">${back}<div class="empty"><div class="big">🎭</div>Pick a channel to start roleplaying.</div></div>`; return; }
+  if (S.tab === 'messages') { m.innerHTML = `<div class="page"><div class="empty"><div class="big">💬</div>Pick a conversation, or start a new one.<br><br><button class="btn primary" data-act="new-dm">New message</button></div></div>`; return; }
+  const P = { home: pageHome, worlds: pageDiscover, characters: pageChars, notifs: pageNotifs, profile: pageProfile }[S.tab] || pageHome;
+  m.innerHTML = `<div class="page">${P()}</div>`;
+  if (S.tab === 'profile') { bindProfile(); bindAi(); }
+  if (S.tab === 'worlds') { const i = $('#dq'); if (i) i.oninput = () => { S.discoverQ = i.value; clearTimeout(i._t); i._t = setTimeout(loadPublic, 300); }; }
+}
+function worldCard(w, act = 'world') {
+  return `<button class="wcard" data-act="${act}" data-id="${w.id}"><div class="cov" style="${w.icon_url ? `background-image:url('${esc(w.icon_url)}')` : `background:linear-gradient(135deg,hsl(${hue(w.name)} 35% 30%),hsl(${(hue(w.name) + 50) % 360} 40% 20%))`}">${w.icon_url ? '' : esc(initials(w.name))}</div>
+    <div class="bd"><div class="nm">${esc(w.name)}</div><div class="ds">${esc(w.description || '')}</div><div style="margin-top:8px"><span class="pill">${{ public: '🌐 Public', invite: '🔗 Invite only', private: '🔒 Private' }[w.privacy]}</span>${unreadFor(w.id) ? ` <span class="pill" style="color:var(--rose)">● ${unreadFor(w.id)} new</span>` : ''}</div></div></button>`;
+}
+function pageHome() {
+  const first = !S.worlds.length;
+  return `<div class="row wrap" style="justify-content:space-between;margin-bottom:8px"><div><h1>Hey, ${esc(pname(me.id))}</h1><p class="muted" style="margin:0">${first ? 'Let’s set up your first world.' : 'Your worlds'}</p></div>
+    <div class="row"><button class="btn ghost" data-act="join-code">🔗 Join with link</button><button class="btn primary" data-act="create-world">＋ Create world</button></div></div>
+    ${first ? `<div class="flow"><span>1 · Create a world</span><span>2 · Add channels</span><span>3 · Create a character</span><span>4 · Invite friends</span><span>5 · Pick your character & write</span></div>` : ''}
+    <div class="cards" style="margin-top:18px">${S.worlds.map(w => worldCard(w)).join('')}${first ? `<button class="wcard newcard" data-act="create-world" style="align-items:center;display:flex;min-height:200px"><div style="font-size:34px">＋</div>Create your first world</button>` : ''}</div>
+    ${!S.myChars.length ? `<h2>Your characters</h2><div class="cards"><button class="ccard newcard" data-act="new-char"><div style="font-size:32px">🎭</div>Create your first character</button></div>` : ''}`;
+}
+async function loadPublic() {
+  let q = sb.from('worlds').select('*').eq('privacy', 'public').order('created_at', { ascending: false }).limit(60);
+  if (S.discoverQ) q = q.ilike('name', `%${S.discoverQ.replace(/[%_]/g, '')}%`);
+  const { data } = await q; S.publicWorlds = data || [];
+  if (S.tab === 'worlds') { const g = $('#dgrid'); if (g) g.innerHTML = discoverGrid(); else renderMain(); }
+}
+const discoverGrid = () => S.publicWorlds.length ? S.publicWorlds.map(w => worldCard(w, S.role[w.id] ? 'world' : 'preview-world')).join('') : `<div class="empty">No public worlds found. Be the first — create one!</div>`;
+function pageDiscover() {
+  return `<div class="row wrap" style="justify-content:space-between"><div><h1>Worlds</h1><p class="muted" style="margin:0">Discover public worlds, or start your own.</p></div>
+    <div class="row"><button class="btn ghost" data-act="join-code">🔗 Join with link</button><button class="btn primary" data-act="create-world">＋ Create world</button></div></div>
+    <input class="inp" id="dq" placeholder="Search public worlds…" value="${esc(S.discoverQ)}" style="margin:20px 0 16px">
+    <div class="cards" id="dgrid">${discoverGrid()}</div>`;
+}
+function pageChars() {
+  return `<div class="row wrap" style="justify-content:space-between"><div><h1>Characters</h1><p class="muted" style="margin:0">A name and a picture — that's all. Switch between them instantly in any roleplay channel.</p></div><div class="row wrap"><button class="btn ghost" data-act="new-bot">🤖 New AI bot</button><button class="btn primary" data-act="new-char">＋ New character</button></div></div>
+    <div class="cards" style="margin-top:20px">${S.myChars.map(c => `<div class="ccard" style="--cc:${esc(c.color)}" data-act="char" data-id="${c.id}">${av(c.avatar_url, c.name, 'lg')}<div style="font-weight:700;font-size:16px;color:${esc(c.color)}">${esc(c.name)}</div>
+      ${isBot(c) ? '<span class="pill" style="color:var(--accent)">🤖 AI bot</span>' : ''}<span class="pill">${{ private: '🔒 Only me', public: isBot(c) ? '🌐 Anyone can use' : '🌐 Anyone can play', restricted: '👥 Shared' }[c.visibility]}</span>
+      <button class="btn sm ghost" data-act="edit-char" data-id="${c.id}">Edit</button></div>`).join('')}
+      <button class="ccard newcard" data-act="new-char"><div style="font-size:32px">＋</div>Create character</button></div>`;
+}
+function pageNotifs() {
+  const ico = { invite: '🏫', dm: '💬', mention: '@', reply: '↩️', follow: '🔔' };
+  return `<div class="row wrap" style="justify-content:space-between"><div><h1>Notifications</h1><p class="muted" style="margin:0">Mentions, replies, DMs and invitations.</p></div>
+    <div class="row"><button class="btn sm ghost" data-act="notif-readall">Mark all read</button><button class="btn sm ghost" data-act="notif-clear">Clear read</button></div></div>
+    <div style="margin-top:18px">${S.notifs.length ? S.notifs.map(n => `<div class="nitem ${n.read ? '' : 'unread'}" data-act="notif" data-id="${n.id}">
+      <div class="ico">${ico[n.kind] || '•'}</div><div class="grow"><div>${esc(n.body)}</div><div class="tiny faint" style="margin-top:2px">${ago(n.created_at)}${n.world_id && S.worlds.find(w => w.id === n.world_id) ? ' · ' + esc(S.worlds.find(w => w.id === n.world_id).name) : ''}</div>
+      ${n.kind === 'invite' && !n.read ? `<div class="row" style="margin-top:10px"><button class="btn sm primary" data-act="inv-yes" data-id="${n.invite_id}">Accept</button><button class="btn sm ghost" data-act="inv-no" data-id="${n.invite_id}">Decline</button></div>` : ''}</div></div>`).join('') : `<div class="empty"><div class="big">🔔</div>You're all caught up.</div>`}</div>`;
+}
+function pageProfile() {
+  const t = LS.get('theme', 'dark'), a = LS.get('accent', '#e9a24e'), fs = LS.get('fs', 15);
+  const accents = ['#e9a24e', '#d4637a', '#8f7cf0', '#4fb3d9', '#56c88a', '#e36d3d'];
+  return `<h1>Profile</h1><p class="muted" style="margin:0 0 20px">This is you — the person behind the characters.</p>
+    <div class="row" style="gap:18px;margin-bottom:20px"><div class="dotwrap">${av(me.avatar_url, pname(me.id), 'lg')}</div>
+      <div class="row wrap"><button class="btn sm" data-act="pf-avatar">Upload photo</button>${me.avatar_url ? `<button class="btn sm ghost" data-act="pf-avatar-rm">Remove</button>` : ''}</div></div>
+    <div style="max-width:520px">
+    <label class="field"><span>Display name</span><input class="inp" id="pf-dn" value="${esc(me.display_name || '')}" maxlength="40"></label>
+    <label class="field"><span>Username</span><input class="inp" id="pf-un" value="${esc(me.username)}" maxlength="30"></label>
+    <label class="field"><span>Bio</span><textarea class="inp" id="pf-bio" maxlength="600">${esc(me.bio || '')}</textarea></label>
+    <button class="btn primary" data-act="pf-save">Save profile</button>
+    <h2>Appearance</h2>
+    <div class="field"><span>Theme</span><div class="seg">${[['dark', '🌙 Dusk'], ['midnight', '🌌 Midnight'], ['light', '☀️ Light']].map(([v, l]) => `<label><input type="radio" name="pf-theme" value="${v}" ${t === v ? 'checked' : ''}>${l}</label>`).join('')}</div></div>
+    <div class="field"><span>Accent</span><div class="row wrap">${accents.map(c => `<button data-act="pf-accent" data-c="${c}" style="width:34px;height:34px;border-radius:50%;background:${c};box-shadow:${a === c ? '0 0 0 3px var(--bg3),0 0 0 5px ' + c : 'none'}"></button>`).join('')}</div></div>
+    <div class="field"><span>Text size — ${fs}px</span><input type="range" id="pf-fs" min="13" max="19" value="${fs}" style="width:100%;accent-color:var(--accent)"></div>
+    ${aiSettingsHTML()}
+    <h2>Account</h2><p class="small muted">${esc((sb.auth && '') || '')}Signed in. Your worlds, characters and messages sync across every device.</p>
+    <button class="btn danger" data-act="signout">Sign out</button></div>`;
+}
+function bindProfile() {
+  $$('input[name=pf-theme]').forEach(r => r.onchange = () => { LS.set('theme', r.value); applyTheme(); });
+  const fs = $('#pf-fs'); if (fs) fs.oninput = () => { LS.set('fs', +fs.value); applyTheme(); fs.previousElementSibling && (fs.closest('.field').querySelector('span').textContent = `Text size — ${fs.value}px`); };
+}
+
+/* ---------- chat ---------- */
+function renderChatShell() {
+  const m = $('#main');
+  m.innerHTML = `<div class="mhead" id="chead"></div>
+    <div id="msgs"></div><div id="typing"></div>
+    <div class="composer" id="composer"></div>`;
+  renderChatHeader(); renderComposer();
+  const list = $('#msgs');
+  list.addEventListener('scroll', () => { if (list.scrollTop < 120 && S.hasMore && !S.loadingMsgs && S.msgs.length) loadMessages(true); }, { passive: true });
+}
+function chanLabel() {
+  const c = S.chan; if (!c) return '';
+  if (c._dm) return dmTitle(c).title;
+  return c.name;
+}
+function renderChatHeader() {
+  const h = $('#chead'); if (!h || !S.chan) return;
+  const c = S.chan, rp = isRP(), cur = currentChar();
+  const ic = c._dm ? (c.kind === 'char' ? '🎭' : '💬') : c.parent_id ? '🧵' : chanIcon(c);
+  const parent = c.parent_id && S.channels.find(x => x.id === c.parent_id);
+  h.innerHTML = `<button class="ibtn back" data-act="mback" title="Back">‹</button>
+    <div class="grow" style="min-width:0"><div class="title ellip">${ic} ${esc(chanLabel())}${c.archived ? ' <span class="tag">archived</span>' : ''}</div>
+      <div class="sub ellip">${c._dm ? esc(dmTitle(c).sub) : parent ? 'Scene in #' + esc(parent.name) : esc(c.topic || (c.kind === 'rp' ? 'Roleplay channel' : 'Text channel'))}</div></div>
+    ${rp ? `<button class="playas" data-act="pick-char" title="Switch character (Alt+↑/↓)">${cur ? av(cur.avatar_url, cur.name, 'sm') : av(me.avatar_url, pname(me.id), 'sm')}
+      <div style="min-width:0;text-align:left"><div class="lbl">🎭 Playing as</div><div class="nm ellip" style="${cur ? `color:${esc(cur.color)}` : ''}">${esc(cur ? cur.name : 'Yourself (OOC)')}</div></div><span class="faint">▾</span></button>` : ''}
+    ${rp && !c._dm ? `<button class="ibtn" data-act="bots" title="AI bot partner" style="${botPartner() ? 'background:var(--mention-bg);color:var(--accent)' : ''}">🤖</button>` : ''}
+    ${!c._dm ? `<button class="ibtn" data-act="follow" title="${S.follows.has(c.id) ? 'Unfollow channel' : 'Follow channel — get notified about new messages'}">${S.follows.has(c.id) ? '🔔' : '🔕'}</button>` : ''}
+    <button class="ibtn" data-act="search" title="Search">🔎</button>
+    ${!c._dm ? `<button class="ibtn" data-act="toggle-right" title="Members">👥</button>` : ''}`;
+}
+function canPost() {
+  const c = S.chan; if (!c) return false;
+  if (c._dm) return true;
+  return !c.archived && myRank() >= Math.max(c.min_rank, 1);
+}
+function renderComposer() {
+  const box = $('#composer'); if (!box) return;
+  if (!canPost()) { box.innerHTML = `<div class="readonly-note">${S.chan.archived ? '🗄️ This channel is archived — it’s read-only.' : myRank() <= 1 ? '👁️ You’re a guest here — view only.' : '🔒 Only staff can post in this channel.'}</div>`; return; }
+  box.innerHTML = `<div class="cbox">
+    <div id="cbar" class="cbar hidden"></div><div id="cpend" class="pend hidden"></div>
+    <div class="crow">
+      <button class="ibtn" data-act="attach" title="Attach">＋</button>
+      ${isRP() ? `<button class="cchip" id="cchip" data-act="pick-char"></button>` : ''}
+      <textarea id="ctext" rows="1" maxlength="6000" enterkeyhint="${isMobile() ? 'enter' : 'send'}"></textarea>
+      <button class="send" data-act="send" title="Send">➤</button>
+    </div></div>`;
+  renderComposerChip(); updatePlaceholder();
+  const ta = $('#ctext');
+  ta.addEventListener('input', () => { autosize(); sendTyping(); mentionCheck(); });
+  ta.addEventListener('keydown', e => {
+    const pop = $('#mpop');
+    if (pop && ['ArrowDown', 'ArrowUp', 'Enter', 'Tab', 'Escape'].includes(e.key)) {
+      const items = $$('.mi', pop); let i = items.findIndex(x => x.classList.contains('on'));
+      if (e.key === 'Escape') { pop.remove(); return; }
+      e.preventDefault();
+      if (e.key === 'ArrowDown') i = (i + 1) % items.length; else if (e.key === 'ArrowUp') i = (i - 1 + items.length) % items.length; else { items[Math.max(i, 0)]?.click(); return; }
+      items.forEach((x, j) => x.classList.toggle('on', j === i)); return;
+    }
+    if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && isRP()) { e.preventDefault(); cycleChar(e.key === 'ArrowDown' ? 1 : -1); return; }
+    if (e.key === 'Escape' && (S.editing || S.replyTo)) { cancelBar(); return; }
+    if (e.key === 'ArrowUp' && !ta.value && !S.editing) { const mine = [...S.msgs].reverse().find(m => m.author_id === me.id && !m.deleted); if (mine) { e.preventDefault(); startEdit(mine.id); } return; }
+    if (e.key === 'Enter' && !e.shiftKey && !isMobile()) { e.preventDefault(); sendMessage(); }
+  });
+  ta.addEventListener('paste', e => { const files = [...(e.clipboardData?.files || [])]; if (files.length) { e.preventDefault(); addFiles(files); } });
+  const main = $('#main');
+  main.ondragover = e => { e.preventDefault(); };
+  main.ondrop = e => { e.preventDefault(); const f = [...(e.dataTransfer?.files || [])]; if (f.length && canPost()) addFiles(f); };
+  if (!isMobile()) setTimeout(() => ta.focus(), 30);
+}
+function autosize() { const ta = $('#ctext'); if (!ta) return; ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, innerHeight * .4) + 'px'; }
+function renderComposerChip() {
+  const chip = $('#cchip'); if (!chip) return; const cur = currentChar();
+  chip.innerHTML = (cur ? av(cur.avatar_url, cur.name, 'sm') : av(me.avatar_url, pname(me.id), 'sm')) + `<span class="nm ellip" style="${cur ? `color:${esc(cur.color)}` : ''}">${esc(cur ? cur.name.split(' ')[0] : 'OOC')}</span><span class="faint">▾</span>`;
+}
+function updatePlaceholder() {
+  const ta = $('#ctext'); if (!ta) return; const cur = currentChar();
+  ta.placeholder = S.editing ? 'Edit your message…' : isRP() ? (cur ? `Write as ${cur.name}…  *actions*  "dialogue"` : 'Out of character…') : `Message ${S.chan._dm ? dmTitle(S.chan).title : '#' + S.chan.name}`;
+}
+function cycleChar(dir) {
+  const u = usableChars().all; if (!u.length) return;
+  const cur = currentChar(); const opts = [null, ...u];
+  let i = opts.findIndex(c => (c?.id || null) === (cur?.id || null)); i = (i + dir + opts.length) % opts.length;
+  setPlaying(opts[i]?.id || 'ooc'); toast('🎭 Now playing as ' + (opts[i]?.name || 'yourself (OOC)'));
+}
+function renderBar() {
+  const bar = $('#cbar'); if (!bar) return;
+  if (S.editing) { bar.innerHTML = `✏️ <span class="grow">Editing message</span><button class="ibtn" data-act="cancel-bar" style="width:26px;height:26px">✕</button>`; bar.classList.remove('hidden'); return; }
+  if (S.replyTo) {
+    const m = S.msgs.find(x => x.id === S.replyTo) || S.extraMsgs[S.replyTo];
+    const n = m?.character_id ? S.chars[m.character_id]?.name : pname(m?.author_id);
+    bar.innerHTML = `↩️ <span class="grow ellip">Replying to <b>${esc(n || '')}</b></span><button class="ibtn" data-act="cancel-bar" style="width:26px;height:26px">✕</button>`; bar.classList.remove('hidden'); return;
+  }
+  bar.classList.add('hidden');
+}
+function cancelBar() { const was = S.editing; S.editing = null; S.replyTo = null; renderBar(); updatePlaceholder(); if (was) { $('#ctext').value = ''; autosize(); } }
+function renderPending() {
+  const p = $('#cpend'); if (!p) return;
+  p.classList.toggle('hidden', !S.pending.length);
+  p.innerHTML = S.pending.map((a, i) => `<div class="pi">${a.uploading ? '<div class="spin"></div>' : a.type?.startsWith('image/') ? `<img src="${esc(a.url)}" alt="">` : `📁<br>${esc(a.name.slice(0, 18))}`}<button data-act="unpend" data-i="${i}">✕</button></div>`).join('');
+}
+
+let typingSent = 0;
+function sendTyping() {
+  if (!room || Date.now() - typingSent < 2500) return; typingSent = Date.now();
+  const cur = currentChar(); room.send({ type: 'broadcast', event: 'typing', payload: { u: me.id, l: cur ? cur.name : pname(me.id) } });
+}
+function renderTyping() {
+  const el = $('#typing'); if (!el) return; const now = Date.now();
+  for (const k in S.typing) if (now - S.typing[k].t > 6000) delete S.typing[k];
+  const names = Object.values(S.typing).map(x => x.l);
+  el.innerHTML = names.length ? `<i>${esc(names.slice(0, 3).join(', '))}${names.length > 3 ? ' and others' : ''} ${names.length > 1 ? 'are' : 'is'} writing…</i>` : '';
+}
+setInterval(renderTyping, 2000);
+
+function renderMsgs(mode) {
+  const list = $('#msgs'); if (!list || !S.chan) return;
+  const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 160;
+  const c = S.chan; let html = '';
+  if (!S.hasMore) {
+    html += `<div class="chan-intro"><div class="big">${c._dm ? (c.kind === 'char' ? '🎭' : '💬') : c.parent_id ? '🧵' : chanIcon(c)}</div><div class="h-display" style="font-size:24px">${c._dm ? esc(chanLabel()) : 'Welcome to #' + esc(c.name)}</div>
+      <div class="muted small">${c._dm ? 'This is the start of your conversation.' : c.kind === 'rp' ? 'The start of the scene. Pick your character with 🎭 Playing as and write — <i>*actions*</i> and "dialogue" are styled for you.' : 'The start of this channel.'}</div></div>`;
+  } else html += `<button class="btn sm ghost loadmore" data-act="older">Load earlier messages</button>`;
+  let prev = null, prevDay = '';
+  for (const m of S.msgs) {
+    const day = new Date(m.created_at).toDateString();
+    if (day !== prevDay) { html += `<div class="daysep">${fmtDay(m.created_at)}</div>`; prev = null; prevDay = day; }
+    html += msgHTML(m, prev); prev = m;
+  }
+  list.innerHTML = html;
+  if (mode === 'bottom' || (mode !== 'keep' && nearBottom)) { list.scrollTop = list.scrollHeight; $$('img', list).forEach(i => !i.complete && i.addEventListener('load', () => { if (list.scrollHeight - list.scrollTop - list.clientHeight < 400) list.scrollTop = list.scrollHeight; }, { once: true })); }
+}
+function msgHTML(m, prev) {
+  const ch = m.character_id ? S.chars[m.character_id] : null;
+  const au = S.profiles[m.author_id];
+  const t = new Date(m.created_at);
+  const grouped = prev && !prev.deleted && !m.reply_to && prev.author_id === m.author_id && prev.character_id === m.character_id && (t - new Date(prev.created_at)) < 7 * 60e3;
+  const name = ch ? ch.name : pname(m.author_id);
+  const avatar = ch ? av(ch.avatar_url, ch.name) : av(au?.avatar_url, pname(m.author_id));
+  const whoAct = ch ? `data-act="char" data-id="${ch.id}"` : `data-act="user" data-id="${m.author_id}"`;
+  const mentioned = (m.mentions || []).some(x => x.u === me.id);
+  const own = m.author_id === me.id, mod = !S.chan._dm && myRank() >= 3;
+  let reply = '';
+  if (m.reply_to) {
+    const r = S.msgs.find(x => x.id === m.reply_to) || S.extraMsgs[m.reply_to];
+    if (r) { const rn = r.character_id ? S.chars[r.character_id]?.name : pname(r.author_id); reply = `<div class="rep" data-act="jump" data-id="${r.id}"><b>${esc(rn || '')}</b><span class="ellip">${r.deleted ? '<i>deleted message</i>' : esc(r.content.slice(0, 120)) || '📎 attachment'}</span></div>`; }
+    else reply = `<div class="rep"><span class="faint">original message unavailable</span></div>`;
+  }
+  const head = grouped ? '' : `<div class="meta"><span class="who" ${whoAct} style="--nc:${ch ? esc(ch.color) : 'var(--text)'}">${esc(name)}</span>
+     ${ch && isBot(ch) ? `<span class="tag" style="background:var(--mention-bg);color:var(--accent)">🤖 Bot</span>` : ''}${ch ? `<span class="pb" data-act="user" data-id="${m.author_id}">${isBot(ch) ? 'run by' : 'played by'} ${esc(pname(m.author_id))}</span>` : (isRP() && !S.chan._dm ? `<span class="tag">OOC</span>` : '')}
+     <span class="tm" title="${esc(t.toLocaleString())}">${fmtTime(m.created_at)}</span></div>`;
+  let body;
+  if (m.deleted) body = `<div class="deleted">message deleted</div>`;
+  else {
+    body = (m.content ? `<div class="body">${fmt(m.content, m.mentions || [])}${m.edited_at ? '<span class="edited">(edited)</span>' : ''}</div>` : '');
+    const imgs = (m.attachments || []).filter(a => a.type?.startsWith('image/')), files = (m.attachments || []).filter(a => !a.type?.startsWith('image/'));
+    if (imgs.length || files.length) body += `<div class="atts">${imgs.map(a => `<img src="${esc(a.url)}" alt="${esc(a.name || '')}" loading="lazy" data-act="lightbox" data-src="${esc(a.url)}">`).join('')}${files.map(a => `<a class="fcard" href="${esc(a.url)}" target="_blank" rel="noopener" download><span style="font-size:24px">📁</span><div class="grow"><div class="ellip" style="font-weight:500">${esc(a.name)}</div><div class="tiny faint">${fmtSize(a.size || 0)}</div></div><span>⬇</span></a>`).join('')}</div>`;
+    const rx = Object.entries(m.reactions || {}).filter(([, u]) => u.length);
+    if (rx.length) body += `<div class="rx">${rx.map(([e, u]) => `<button class="${u.includes(me.id) ? 'mine' : ''}" data-act="react" data-id="${m.id}" data-e="${esc(e)}" title="${esc(u.map(pname).join(', '))}">${esc(e)} <b>${u.length}</b></button>`).join('')}</div>`;
+  }
+  const acts = m.deleted ? '' : `<div class="mact">${QUICK.slice(0, 3).map(e => `<button data-act="react" data-id="${m.id}" data-e="${e}" title="React ${e}">${e}</button>`).join('')}<button data-act="react-more" data-id="${m.id}" title="More reactions">😀</button><button data-act="reply" data-id="${m.id}" title="Reply">↩️</button>${!S.chan._dm && canPost() ? `<button data-act="scene" data-id="${m.id}" title="Create scene from this">🧵</button>` : ''}${own ? `<button data-act="edit" data-id="${m.id}" title="Edit">✏️</button>` : ''}${own || mod ? `<button data-act="del" data-id="${m.id}" title="Delete">🗑️</button>` : ''}</div>`;
+  return `<div class="msg ${grouped ? 'grouped' : ''} ${mentioned ? 'mentioned' : ''}" id="m-${m.id}" data-mid="${m.id}">${reply}<div class="gut" ${grouped ? '' : whoAct} style="cursor:pointer">${grouped ? t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : avatar}</div><div class="mc">${head}${body}</div>${acts}</div>`;
+}
+
+/* ---------- sending ---------- */
+let sending = false;
+async function sendMessage() {
+  const ta = $('#ctext'); if (!ta || sending) return;
+  const text = ta.value.replace(/\s+$/, '');
+  if (S.editing) {
+    const id = S.editing; if (!text.trim()) return;
+    const { error } = await sb.rpc('edit_message', { mid: id, body: text });
+    if (error) return toast(errMsg(error));
+    const m = S.msgs.find(x => x.id === id); if (m) { m.content = text; m.edited_at = new Date().toISOString(); renderMsgs('keep'); }
+    cancelBar(); ta.value = ''; autosize(); return;
+  }
+  if (S.pending.some(a => a.uploading)) return toast('Hang on — still uploading…');
+  if (!text.trim() && !S.pending.length) return;
+  const cur = currentChar();
+  const mentions = collectMentions(text);
+  const row = {
+    author_id: me.id, content: text, character_id: cur?.id || null,
+    attachments: S.pending.map(({ url, path, name, type, size }) => ({ url, path, name, type, size })),
+    mentions, reply_to: S.replyTo,
+  };
+  if (S.chan._dm) row.dm_id = S.chan.id; else row.channel_id = S.chan.id;
+  sending = true; ta.value = ''; autosize(); const savedPend = S.pending; S.pending = []; renderPending(); const savedReply = S.replyTo; S.replyTo = null; renderBar(); S.mentionPicks = [];
+  const { data, error } = await sb.from('messages').insert(row).select().single();
+  sending = false;
+  if (error) { ta.value = text; S.pending = savedPend; S.replyTo = savedReply; renderPending(); renderBar(); return toast('Couldn’t send: ' + errMsg(error)); }
+  addIncoming([data]); const list = $('#msgs'); if (list) list.scrollTop = list.scrollHeight;
+  if (isMobile()) ta.focus();
+  botTriggers(data);
+}
+function collectMentions(text) {
+  const out = [], seen = new Set();
+  for (const p of S.mentionPicks) if (text.includes('@' + p.l) && !seen.has(p.l)) { out.push(p); seen.add(p.l); }
+  // also catch plain @username for world members / DM partner
+  const pool = S.chan._dm ? S.chan.members : S.members.map(m => m.user_id);
+  for (const id of pool) { const u = S.profiles[id]?.username; if (u && text.includes('@' + u) && !seen.has(u)) { out.push({ u: id, c: null, l: u }); seen.add(u); } }
+  return out.slice(0, 20);
+}
+
+/* mention autocomplete */
+function mentionCheck() {
+  const ta = $('#ctext'); $('#mpop')?.remove();
+  const before = ta.value.slice(0, ta.selectionStart); const m = before.match(/(?:^|\s)@([^\s@]{0,24})$/);
+  if (!m) return;
+  const q = m[1].toLowerCase();
+  const users = (S.chan._dm ? S.chan.members : S.members.map(x => x.user_id)).map(id => ({ u: id, c: null, l: pname(id), sub: '@' + (S.profiles[id]?.username || ''), av: S.profiles[id]?.avatar_url }));
+  const chars = (S.chan._dm ? [S.chan.char_a, S.chan.char_b].map(id => S.chars[id]).filter(Boolean) : S.worldChars).map(c => ({ u: c.owner_id, c: c.id, l: c.name, sub: 'played by ' + pname(c.owner_id), av: c.avatar_url, color: c.color }));
+  const res = [...chars, ...users].filter(x => x.l.toLowerCase().includes(q) || x.sub.toLowerCase().includes(q)).slice(0, 8);
+  if (!res.length) return;
+  const pop = document.createElement('div'); pop.className = 'pop'; pop.id = 'mpop';
+  pop.innerHTML = `<div class="ptitle">Mention</div>` + res.map((x, i) => `<button class="mi ${i === 0 ? 'on' : ''}" data-i="${i}">${av(x.av, x.l, 'sm')}<div class="grow"><div class="ellip" style="font-weight:700;${x.color ? `color:${esc(x.color)}` : ''}">${x.c ? '🎭 ' : ''}${esc(x.l)}</div><div class="sub ellip">${esc(x.sub)}</div></div></button>`).join('');
+  document.body.appendChild(pop);
+  const r = $('#composer').getBoundingClientRect(); pop.style.left = (r.left + 14) + 'px'; pop.style.top = Math.max(8, r.top - pop.offsetHeight - 6) + 'px';
+  $$('.mi', pop).forEach(b => b.onclick = () => {
+    const x = res[+b.dataset.i]; const start = before.length - m[1].length - 1;
+    ta.value = ta.value.slice(0, start) + '@' + x.l + ' ' + ta.value.slice(ta.selectionStart);
+    const pos = start + x.l.length + 2; ta.setSelectionRange(pos, pos); ta.focus();
+    S.mentionPicks.push({ u: x.u, c: x.c, l: x.l }); pop.remove(); autosize();
+  });
+}
+
+/* ---------- uploads ---------- */
+async function compress(file, max = 1600, q = .85) {
+  if (!file.type.startsWith('image/') || /gif|svg/.test(file.type)) return file;
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); });
+    let { naturalWidth: w, naturalHeight: h } = img; const k = Math.min(1, max / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h; cv.getContext('2d').drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(img.src);
+    const type = file.type === 'image/png' && file.size < 1.5e6 ? 'image/png' : 'image/jpeg';
+    const blob = await new Promise(r => cv.toBlob(r, type, q));
+    return blob && blob.size < file.size ? new File([blob], file.name.replace(/\.\w+$/, '') + (type === 'image/png' ? '.png' : '.jpg'), { type }) : file;
+  } catch { return file; }
+}
+async function upload(file, max) {
+  const f = await compress(file, max);
+  if (f.size > 25 * 1024 * 1024) throw new Error(file.name + ' is over 25 MB');
+  const ext = (f.name.match(/\.(\w{1,6})$/) || [, 'bin'])[1].toLowerCase();
+  const path = `${me.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await sb.storage.from('media').upload(path, f, { contentType: f.type || 'application/octet-stream', cacheControl: '31536000' });
+  if (error) throw error;
+  const { data } = sb.storage.from('media').getPublicUrl(path);
+  return { url: data.publicUrl, path, name: file.name, type: f.type, size: f.size };
+}
+async function removeFiles(paths) { paths = paths.filter(p => p && p.startsWith(me.id + '/')); if (paths.length) await sb.storage.from('media').remove(paths); }
+function pickFiles(accept, multiple = true) {
+  return new Promise(res => {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = accept || ''; inp.multiple = multiple;
+    inp.onchange = () => res([...inp.files]); inp.click();
+  });
+}
+async function addFiles(files) {
+  for (const file of files.slice(0, 10)) {
+    const item = { uploading: true, name: file.name, type: file.type }; S.pending.push(item); renderPending();
+    try { Object.assign(item, await upload(file), { uploading: false }); }
+    catch (e) { S.pending = S.pending.filter(x => x !== item); toast('Upload failed: ' + errMsg(e)); }
+    renderPending();
+  }
+}
+
+/* ---------- AI bots (free third-party AI, key stays on this device) ---------- */
+const AI_PRESETS = {
+  groq: { label: 'Groq — free, very fast', url: 'https://api.groq.com/openai/v1/chat/completions', model: 'llama-3.3-70b-versatile', keyUrl: 'https://console.groq.com/keys' },
+  openrouter: { label: 'OpenRouter — free models', url: 'https://openrouter.ai/api/v1/chat/completions', model: 'meta-llama/llama-3.3-70b-instruct:free', keyUrl: 'https://openrouter.ai/keys' },
+  gemini: { label: 'Google Gemini — free tier', url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', model: 'gemini-2.5-flash', keyUrl: 'https://aistudio.google.com/apikey' },
+  custom: { label: 'Custom (OpenAI-compatible)', url: '', model: '', keyUrl: '' },
+};
+const isBot = c => c?.extra === 'bot';
+function aiCfg() { const c = LS.get('ai', {}); const prov = AI_PRESETS[c.provider] ? c.provider : 'groq'; const p = AI_PRESETS[prov]; return { provider: prov, key: c.key || '', url: c.url || p.url, model: c.model || p.model }; }
+function botsHere() {
+  if (!S.chan || S.chan._dm) return [];
+  const ok = ch => isBot(ch) && !S.blocks.has(ch.id) && (ch.owner_id === me.id || ch.visibility === 'public' || (ch.visibility === 'restricted' && (ch.allowed_users || []).includes(me.id)));
+  const map = new Map(); [...S.myChars, ...S.worldChars].forEach(c => ok(c) && map.set(c.id, c)); return [...map.values()];
+}
+const botPartner = () => S.chan ? LS.get('botPartner', {})[S.chan.id] : null;
+async function botTriggers(m) {
+  if (!S.chan || S.chan._dm || (m.character_id && isBot(S.chars[m.character_id]))) return;
+  const here = botsHere(); if (!here.length) return;
+  const ids = new Set();
+  (m.mentions || []).forEach(x => x.c && here.some(b => b.id === x.c) && ids.add(x.c));
+  if (m.reply_to) { const r = S.msgs.find(x => x.id === m.reply_to) || S.extraMsgs[m.reply_to]; if (r?.character_id && here.some(b => b.id === r.character_id)) ids.add(r.character_id); }
+  const p = botPartner(); if (p && here.some(b => b.id === p)) ids.add(p);
+  for (const id of ids) await botReply(S.chars[id]);
+}
+const botBusy = new Set();
+async function botReply(bot) {
+  const cfg = aiCfg(); if (!cfg.key) { toast('🤖 Add a free AI key in Profile → AI bots first (tap here)', () => setTab('profile')); return; }
+  const chan = S.chan, k = bot.id + chan.id; if (botBusy.has(k)) return; botBusy.add(k);
+  S.typing['bot:' + bot.id] = { l: bot.name, t: Date.now() + 90000 }; renderTyping();
+  room?.send({ type: 'broadcast', event: 'typing', payload: { u: 'bot:' + bot.id, l: bot.name } });
+  try {
+    const text = await aiGenerate(bot, S.msgs.filter(m => !m.deleted && (m.content || m.attachments?.length)).slice(-30), cfg);
+    if (!text) throw new Error('the AI sent back an empty reply');
+    const { data, error } = await sb.from('messages').insert({ channel_id: chan.id, author_id: me.id, character_id: bot.id, content: text.slice(0, 6000), attachments: [], mentions: [], reply_to: null }).select().single();
+    if (error) throw error;
+    if (S.chan?.id === chan.id) addIncoming([data]);
+  } catch (e) { toast('🤖 ' + bot.name + ' couldn’t reply: ' + errMsg(e)); }
+  finally { delete S.typing['bot:' + bot.id]; renderTyping(); botBusy.delete(k); }
+}
+async function aiGenerate(bot, hist, cfg) {
+  const w = S.world;
+  const sys = `You are ${bot.name}, a character in a group text roleplay${w ? ` set in "${w.name}"` : ''}${w?.description ? ` — ${w.description}` : ''}.
+
+Who ${bot.name} is and how they act:
+${bot.personality || 'Improvise a vivid, believable personality and keep it consistent.'}
+
+Rules:
+- Write ONLY ${bot.name}'s next message. Never write dialogue or actions for anyone else's character, and never decide what they do.
+- Style: actions in *asterisks*, spoken words in "quotes". Match the length and energy of the conversation — usually 1–3 short paragraphs.
+- React genuinely to what was just said or done. Stay in character, have opinions, emotions and agency. Never mention being an AI.
+- Don't start with your own name. Lines marked (OOC) are players talking out of character.`;
+  const msgs = [{ role: 'system', content: sys }];
+  for (const m of hist) {
+    const c = m.character_id && S.chars[m.character_id], mine = m.character_id === bot.id;
+    const content = mine ? m.content : `${c ? c.name : pname(m.author_id) + ' (OOC)'}: ${m.content || '[sent an image]'}`;
+    const role = mine ? 'assistant' : 'user', last = msgs[msgs.length - 1];
+    if (last.role === role) last.content += '\n\n' + content; else msgs.push({ role, content });
+  }
+  if (msgs[1]?.role === 'assistant') msgs.splice(1, 0, { role: 'user', content: '(The scene begins.)' });
+  if (msgs[msgs.length - 1].role !== 'user') msgs.push({ role: 'user', content: `(Continue as ${bot.name}.)` });
+  const headers = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cfg.key };
+  if (cfg.provider === 'openrouter') { headers['HTTP-Referer'] = location.origin; headers['X-Title'] = 'Cast'; }
+  let res;
+  try { res = await fetch(cfg.url, { method: 'POST', headers, body: JSON.stringify({ model: cfg.model, messages: msgs, temperature: 0.9, max_tokens: 600 }) }); }
+  catch { throw new Error('couldn’t reach the AI service (check the service/URL, or try another one in Profile)'); }
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((Array.isArray(j) ? j[0]?.error?.message : j.error?.message) || j.message || 'error ' + res.status);
+  let t = (j.choices?.[0]?.message?.content || '').trim();
+  const nm = bot.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  t = t.replace(new RegExp('^\\**' + nm + '\\**\\s*:\\s*', 'i'), '').trim();
+  return t;
+}
+function botMenu(anchor) {
+  const here = botsHere(), partner = botPartner(), noKey = !aiCfg().key;
+  popover(anchor, `<div class="ptitle">🤖 AI bot partner for this channel</div>
+    <div class="small muted" style="padding:0 10px 8px">Your bot partner replies whenever you post here. You can also @mention any bot, or reply to its message.</div>
+    ${here.map(b => `<button class="mi ${partner === b.id ? 'on' : ''}" data-bot="${b.id}">${av(b.avatar_url, b.name, 'sm')}<div class="grow"><div class="ellip" style="font-weight:700;color:${esc(b.color)}">${esc(b.name)}</div><div class="sub ellip">${esc((b.personality || '').slice(0, 70)) || 'AI bot'}${b.owner_id !== me.id ? ' · by ' + esc(pname(b.owner_id)) : ''}</div></div>${partner === b.id ? '✓' : ''}</button>`).join('') || '<div class="small faint" style="padding:4px 10px 8px">No bots yet.</div>'}
+    ${partner ? `<button class="mi" data-bot="off">⏹ Turn off bot partner</button>` : ''}
+    <button class="mi" data-bot="new"><div class="av sm" style="background:var(--panel2)">＋</div><b>Create a bot</b></button>
+    ${noKey ? `<button class="mi" data-bot="setup">🔑 Set up your free AI key</button>` : ''}`, pop => pop.onclick = async e => {
+    const b = e.target.closest('[data-bot]'); if (!b) return; pop.remove(); const v = b.dataset.bot;
+    if (v === 'new') return charEditor(null, false, { bot: true });
+    if (v === 'setup') return setTab('profile');
+    const map = LS.get('botPartner', {});
+    if (v === 'off') { delete map[S.chan.id]; LS.set('botPartner', map); renderChatHeader(); return toast('Bot partner off'); }
+    map[S.chan.id] = v; LS.set('botPartner', map); renderChatHeader();
+    const bot = S.chars[v]; toast(`🤖 ${bot.name} will reply to your messages in this channel`);
+    if (noKey) toast('Set up your free AI key in Profile → AI bots so they can talk', () => setTab('profile'));
+    if (bot.bio && !S.msgs.some(m => m.character_id === bot.id)) {
+      const { data } = await sb.from('messages').insert({ channel_id: S.chan.id, author_id: me.id, character_id: bot.id, content: bot.bio, attachments: [], mentions: [], reply_to: null }).select().single();
+      if (data) addIncoming([data]);
+    }
+  });
+}
+function aiSettingsHTML() {
+  const c = aiCfg(), p = AI_PRESETS[c.provider];
+  return `<h2>🤖 AI bots</h2>
+    <p class="small muted" style="max-width:56ch">Bots write their own replies using a free AI service. Paste a free key below — it's saved only on this device and never uses Claude credits. (Character.AI doesn't let other apps connect to it, so this works the same way: you give each bot a personality and it reacts to what you write.)</p>
+    <div class="field"><span>AI service</span><select class="inp" id="ai-p">${Object.entries(AI_PRESETS).map(([k, v]) => `<option value="${k}" ${c.provider === k ? 'selected' : ''}>${v.label}</option>`).join('')}</select></div>
+    <p class="small" id="ai-link-w" ${p.keyUrl ? '' : 'hidden'}>Get a free key: <a id="ai-link" href="${esc(p.keyUrl)}" target="_blank" rel="noopener">${esc(p.keyUrl.replace('https://', ''))}</a></p>
+    <label class="field"><span>API key</span><input class="inp" id="ai-k" type="password" value="${esc(c.key)}" placeholder="Paste your key" autocomplete="off" autocapitalize="off"></label>
+    <details><summary class="small muted" style="cursor:pointer;padding:4px 0 10px">Advanced</summary>
+      <label class="field"><span>Model</span><input class="inp" id="ai-m" value="${esc(c.model)}" autocapitalize="off"></label>
+      <label class="field"><span>Endpoint URL</span><input class="inp" id="ai-u" value="${esc(c.url)}" autocapitalize="off"></label></details>
+    <div class="row wrap"><button class="btn primary" data-act="ai-save">Save</button><button class="btn ghost" data-act="ai-test">Test</button><span id="ai-st" class="small muted"></span></div>`;
+}
+function readAiForm() { return { provider: $('#ai-p').value, key: $('#ai-k').value.trim(), model: $('#ai-m').value.trim(), url: $('#ai-u').value.trim() }; }
+function bindAi() {
+  const sel = $('#ai-p'); if (!sel) return;
+  sel.onchange = () => { const p = AI_PRESETS[sel.value]; $('#ai-m').value = p.model; $('#ai-u').value = p.url; $('#ai-link-w').hidden = !p.keyUrl; $('#ai-link').href = p.keyUrl; $('#ai-link').textContent = p.keyUrl.replace('https://', ''); if (sel.value === 'custom') $('#ai-m').closest('details').open = true; };
+}
+
+/* ---------- popovers & modals ---------- */
+function closePop() { $$('.pop').forEach(p => p.remove()); }
+function popover(anchor, html, onMount) {
+  closePop(); const pop = document.createElement('div'); pop.className = 'pop'; pop.innerHTML = html; document.body.appendChild(pop);
+  if (isMobile()) { const vv = window.visualViewport; const bottom = (vv ? vv.offsetTop + vv.height : innerHeight) - 8; pop.style.top = Math.max(8, bottom - pop.offsetHeight) + 'px'; }
+  else if (anchor) {
+    const r = anchor.getBoundingClientRect(); const pw = pop.offsetWidth, ph = pop.offsetHeight;
+    let left = Math.min(r.left, innerWidth - pw - 10), top = r.bottom + 6;
+    if (top + ph > innerHeight - 10) top = Math.max(10, r.top - ph - 6);
+    pop.style.left = Math.max(10, left) + 'px'; pop.style.top = top + 'px';
+  }
+  onMount?.(pop);
+  setTimeout(() => { const h = e => { if (!pop.contains(e.target)) { pop.remove(); document.removeEventListener('pointerdown', h, true); } }; document.addEventListener('pointerdown', h, true); });
+  return pop;
+}
+function modal(title, body, foot = '', wide = false) {
+  const o = $('#overlay');
+  o.innerHTML = `<div class="modal ${wide ? 'wide' : ''}" role="dialog"><div class="mh"><div class="t">${title}</div><button class="ibtn" data-act="close-modal">✕</button></div><div class="mb">${body}</div>${foot ? `<div class="mf">${foot}</div>` : ''}</div>`;
+  o.classList.add('open'); return o.firstElementChild;
+}
+function closeModal() { const o = $('#overlay'); o.classList.remove('open'); o.innerHTML = ''; }
+$('#overlay').addEventListener('pointerdown', e => { if (e.target.id === 'overlay') closeModal(); });
+
+function charPicker(anchor) {
+  const u = usableChars(), cur = currentChar(), rec = LS.get('recentChars', []);
+  const sortRec = arr => [...arr].sort((a, b) => { const ia = rec.indexOf(a.id), ib = rec.indexOf(b.id); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); });
+  const item = c => `<button class="mi ${cur?.id === c.id ? 'on' : ''}" data-pick="${c.id}">${av(c.avatar_url, c.name, 'sm')}<div class="grow"><div class="ellip" style="font-weight:700;color:${esc(c.color)}">${esc(c.name)}</div><div class="sub ellip">${c.owner_id === me.id ? 'Your character' : 'played by ' + esc(pname(c.owner_id)) + ' · shared'}</div></div>${cur?.id === c.id ? '✓' : ''}</button>`;
+  const html = `<div class="ptitle">Switch character</div>${u.all.length > 7 ? `<input class="inp" id="cpq" placeholder="Search…" style="margin:4px 4px 6px;width:calc(100% - 8px)">` : ''}
+    <div id="cplist">${sortRec(u.mine).map(item).join('')}${u.others.length ? `<div class="ptitle">Shared with you</div>${sortRec(u.others).map(item).join('')}` : ''}</div>
+    <button class="mi ${!cur ? 'on' : ''}" data-pick="ooc">${av(me.avatar_url, pname(me.id), 'sm')}<div class="grow"><div style="font-weight:700">Yourself</div><div class="sub">Out of character (OOC)</div></div>${!cur ? '✓' : ''}</button>
+    <button class="mi" data-pick="new"><div class="av sm" style="background:var(--panel2)">＋</div><div class="grow" style="font-weight:700">Create character</div></button>`;
+  popover(anchor, html, pop => {
+    pop.addEventListener('click', e => {
+      const b = e.target.closest('[data-pick]'); if (!b) return;
+      pop.remove(); if (b.dataset.pick === 'new') return charEditor(null, true);
+      setPlaying(b.dataset.pick); if (!isMobile()) $('#ctext')?.focus();
+    });
+    const q = $('#cpq', pop); if (q) { if (!isMobile()) q.focus(); q.oninput = () => $$('#cplist .mi', pop).forEach(b => b.style.display = b.textContent.toLowerCase().includes(q.value.toLowerCase()) ? '' : 'none'); }
+  });
+}
+
+/* character editor */
+function charEditor(id, thenPlay = false, preset = {}) {
+  const c = id ? { ...S.chars[id] } : { name: '', extra: preset.bot ? 'bot' : '', personality: '', bio: '', avatar_url: null, gallery: [], visibility: 'private', allowed_users: [], color: ['#f0a9b8', '#9fc8f2', '#b5e3a1', '#f3d48b', '#c9a7f5', '#f5a77a'][Math.floor(Math.random() * 6)] };
+  const oldAvatarPath = (c.gallery || []).find(g => g.url === c.avatar_url)?.path;
+  let newPath = null;
+  const allowedNames = (c.allowed_users || []).map(u => S.profiles[u]?.username).filter(Boolean).join(', ');
+  const el = modal(isBot(c) ? (id ? 'Edit AI bot' : 'New AI bot') : (id ? 'Edit character' : 'New character'), `
+    <div style="text-align:center;margin:4px 0 18px"><button id="ce-av" style="display:inline-block;position:relative" title="Choose picture">${av(c.avatar_url, c.name || '?', 'xl')}
+      <span style="position:absolute;right:2px;bottom:2px;width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:17px;border:3px solid var(--bg2)">📷</span></button>
+      <div class="tiny faint" style="margin-top:8px">Tap to ${c.avatar_url ? 'change' : 'add'} picture</div></div>
+    <label class="field"><span>Name</span><input class="inp" id="ce-name" value="${esc(c.name)}" placeholder="Mia Thompson" maxlength="80"></label>
+    <label class="check"><input type="checkbox" id="ce-bot" ${isBot(c) ? 'checked' : ''}> 🤖 AI bot — writes its own replies</label>
+    <div id="ce-botf" class="${isBot(c) ? '' : 'hidden'}" style="margin-top:8px">
+      <label class="field"><span>Personality — who they are & how they act</span><textarea class="inp" id="ce-pers" rows="5" placeholder="Jayden, 18. Star quarterback, cocky but secretly insecure. Teases people he likes. Talks casually, uses slang, hates being ignored.">${esc(c.personality || '')}</textarea></label>
+      <label class="field"><span>Opening message (optional)</span><textarea class="inp" id="ce-greet" rows="2" placeholder='*leans against the locker* "You lost or something?"'>${esc(isBot(c) ? c.bio || '' : '')}</textarea></label>
+    </div>
+    <details ${c.visibility !== 'private' ? 'open' : ''}><summary class="small muted" style="cursor:pointer;padding:6px 0">Sharing: who can play this character?</summary>
+      <div class="seg" style="margin-top:8px">${[['private', '🔒 Only me'], ['public', '🌐 Anyone'], ['restricted', '👥 Specific people']].map(([v, l]) => `<label><input type="radio" name="vis" value="${v}" ${c.visibility === v ? 'checked' : ''}>${l}</label>`).join('')}</div>
+      <label class="field ${c.visibility === 'restricted' ? '' : 'hidden'}" id="ce-allow" style="margin-top:10px"><span>Usernames allowed (comma separated)</span><input class="inp" id="ce-allowed" value="${esc(allowedNames)}" placeholder="alex, josh" autocapitalize="off"></label></details>`,
+    `${id ? `<button class="btn danger" data-ce="del" style="margin-right:auto">Delete</button>` : ''}<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" data-ce="save">${id ? 'Save' : 'Create'}</button>`);
+  const avr = () => { $('#ce-av', el).firstElementChild.outerHTML = av(c.avatar_url, $('#ce-name', el).value || '?', 'xl'); };
+  $('#ce-bot', el).onchange = e => $('#ce-botf', el).classList.toggle('hidden', !e.target.checked);
+  $$('input[name=vis]', el).forEach(r => r.onchange = () => $('#ce-allow', el).classList.toggle('hidden', r.value !== 'restricted'));
+  if (!id && !isMobile()) setTimeout(() => $('#ce-name', el)?.focus(), 50);
+  el.addEventListener('click', async e => {
+    if (e.target.closest('#ce-av')) {
+      const [file] = await pickFiles('image/*', false); if (!file) return;
+      try { const up = await upload(file, 1000); if (newPath) removeFiles([newPath]); newPath = up.path; c.avatar_url = up.url; avr(); } catch (er) { toast(errMsg(er)); }
+      return;
+    }
+    const b = e.target.closest('[data-ce]'); if (!b) return; const a = b.dataset.ce;
+    if (a === 'del') {
+      if (!confirm(`Delete ${c.name}? Their old messages stay but show as an unknown character.`)) return;
+      const { error } = await sb.from('characters').delete().eq('id', id); if (error) return toast(errMsg(error));
+      removeFiles((c.gallery || []).map(g => g.path)); delete S.chars[id]; await loadMyChars(); closeModal(); refreshAfterChars();
+    }
+    if (a === 'save') {
+      const name = $('#ce-name', el).value.trim(); if (!name) return toast('Give your character a name.');
+      const row = { name, avatar_url: c.avatar_url, visibility: $('input[name=vis]:checked', el).value, allowed_users: [] };
+      if ($('#ce-bot', el).checked) { row.extra = 'bot'; row.personality = $('#ce-pers', el).value.trim(); row.bio = $('#ce-greet', el).value.trim(); } else if (isBot(c)) { row.extra = ''; }
+      row.gallery = newPath ? [{ url: c.avatar_url, path: newPath }] : (c.gallery || []).filter(g => g.url === c.avatar_url);
+      if (row.visibility === 'restricted') {
+        const names = $('#ce-allowed', el).value.split(',').map(s => s.trim().replace(/^@/, '').toLowerCase()).filter(Boolean);
+        if (names.length) { const { data } = await sb.from('profiles').select('*').in('username', names); (data || []).forEach(p => S.profiles[p.id] = p); row.allowed_users = (data || []).map(p => p.id); const miss = names.filter(n => !(data || []).some(p => p.username.toLowerCase() === n)); if (miss.length) toast('Not found: ' + miss.join(', ')); }
+      }
+      if (!id) row.color = c.color;
+      b.disabled = true;
+      const q = id ? sb.from('characters').update(row).eq('id', id).select().single() : sb.from('characters').insert({ ...row, owner_id: me.id }).select().single();
+      const { data, error } = await q; b.disabled = false; if (error) return toast(errMsg(error));
+      S.chars[data.id] = data;
+      if (newPath && oldAvatarPath) removeFiles([oldAvatarPath]);
+      newPath = null;
+      await loadMyChars(); closeModal();
+      if (S.world) { const i = S.worldChars.findIndex(x => x.id === data.id); if (i >= 0) S.worldChars[i] = data; else S.worldChars.push(data); }
+      if (thenPlay && S.chan && isRP()) setPlaying(data.id);
+      toast(id ? 'Saved ✓' : isBot(data) ? `🤖 ${data.name} is ready — tap 🤖 in a roleplay channel to chat` : `🎭 ${data.name} is ready to play`); refreshAfterChars();
+    }
+  });
+}
+function refreshAfterChars() { if (S.chan) { renderChatHeader(); renderComposerChip(); renderMsgs('keep'); renderRight(); } else renderMain(); }
+
+function charProfile(id) {
+  const c = S.chars[id]; if (!c) return toast('Character not found');
+  const mine = c.owner_id === me.id, w = S.world;
+  const usable = S.chan && isRP() && usableChars().all.some(x => x.id === id);
+  const canCharDM = w && w.allow_char_dms && !mine && S.myChars.length;
+  const el = modal('', `<div style="text-align:center;margin-top:-8px">
+      <div class="av xl" style="margin:0 auto;width:160px;height:160px;font-size:54px;background:hsl(${hue(c.name)} 38% 38%)">${c.avatar_url ? `<img src="${esc(c.avatar_url)}" alt="" data-act="lightbox" data-src="${esc(c.avatar_url)}" style="cursor:zoom-in">` : esc(initials(c.name))}</div>
+      <div class="h-display" style="font-size:28px;margin-top:12px;color:${esc(c.color)}">${esc(c.name)}</div>
+      ${isBot(c) ? `<div style="margin-top:6px"><span class="pill" style="color:var(--accent)">🤖 AI bot</span></div>${c.personality ? `<div class="small muted" style="margin:10px auto 0;max-width:40ch;white-space:pre-wrap">${esc(c.personality.slice(0, 300))}</div>` : ''}` : ''}
+      <div class="muted small" style="margin-top:4px">${isBot(c) ? 'Created' : 'Played'} by <a href="#" data-act="user" data-id="${c.owner_id}">${esc(pname(c.owner_id))}</a></div>
+      ${w && S.blocks.has(c.id) ? '<div style="margin-top:8px"><span class="pill" style="color:var(--danger)">⛔ Blocked in this world</span></div>' : ''}</div>`,
+    `${w && myRank() >= 4 && !mine ? `<button class="btn sm danger" data-cp="block" style="margin-right:auto">${S.blocks.has(c.id) ? 'Unblock here' : 'Block from world'}</button>` : ''}
+     ${canCharDM ? `<button class="btn sm ghost" data-cp="rpdm">🎭 RP DM</button>` : ''}
+     ${mine ? `<button class="btn sm ghost" data-cp="edit">Edit</button>` : ''}
+     ${usable ? `<button class="btn sm primary" data-cp="play">Play as ${esc(c.name.split(' ')[0])}</button>` : ''}`);
+  el.addEventListener('click', async e => {
+    const b = e.target.closest('[data-cp]'); if (!b) return; const a = b.dataset.cp;
+    if (a === 'edit') charEditor(id);
+    if (a === 'play') { closeModal(); setPlaying(id); }
+    if (a === 'block') {
+      const q = S.blocks.has(id) ? sb.from('world_char_blocks').delete().eq('world_id', w.id).eq('character_id', id) : sb.from('world_char_blocks').insert({ world_id: w.id, character_id: id });
+      const { error } = await q; if (error) return toast(errMsg(error));
+      S.blocks.has(id) ? S.blocks.delete(id) : S.blocks.add(id); closeModal(); renderRight(); toast('Updated');
+    }
+    if (a === 'rpdm') {
+      const opts = S.myChars.filter(x => !S.blocks.has(x.id));
+      popover(b, `<div class="ptitle">Write to ${esc(c.name)} as…</div>` + opts.map(x => `<button class="mi" data-as="${x.id}">${av(x.avatar_url, x.name, 'sm')}<span style="font-weight:700;color:${esc(x.color)}">${esc(x.name)}</span></button>`).join(''), pop => {
+        pop.onclick = async ev => {
+          const bb = ev.target.closest('[data-as]'); if (!bb) return;
+          const { data, error } = await sb.rpc('open_dm', { other: c.owner_id, w: w.id, ca: bb.dataset.as, cb: c.id });
+          if (error) return toast(errMsg(error));
+          pop.remove(); closeModal(); await loadDMs(); const t = S.dms.find(d => d.id === data); if (t) { const map = LS.get('play', {}); map[t.id] = bb.dataset.as; LS.set('play', map); openDM(t); }
+        };
+      });
+    }
+  });
+}
+
+async function userProfile(uid) {
+  await ensureProfiles([uid]); const p = S.profiles[uid]; if (!p) return;
+  const w = S.world, mem = w && S.members.find(m => m.user_id === uid), my = myRank();
+  const theirs = (w ? S.worldChars : []).filter(c => c.owner_id === uid);
+  if (!w) { const { data } = await sb.from('characters').select('*').eq('owner_id', uid); (data || []).forEach(c => { S.chars[c.id] = c; theirs.push(c); }); }
+  const canManage = mem && uid !== me.id && my >= 4 && RANK[mem.role] < my;
+  const canKick = mem && uid !== me.id && my >= 3 && RANK[mem.role] < my;
+  const st = statusOf(uid);
+  const el = modal('', `<div class="row" style="gap:16px;margin-top:-6px"><div class="dotwrap">${av(p.avatar_url, pname(uid), 'lg')}<span class="pdot ${st}" style="width:18px;height:18px;border-width:3px"></span></div>
+      <div class="grow"><div class="h-display" style="font-size:24px">${esc(pname(uid))}</div><div class="muted small">@${esc(p.username)} · ${{ online: '🟢 Online', idle: '🌙 Idle', offline: '⚫ Offline' }[st]}</div>
+      ${mem ? `<div style="margin-top:6px"><span class="pill">${ROLE_META[mem.role].join(' ')}</span></div>` : ''}</div></div>
+    ${p.bio ? `<div class="sect">About</div><div class="prose">${esc(p.bio)}</div>` : ''}
+    <div class="sect">Characters${w ? ' in this world' : ''}</div>
+    ${theirs.length ? theirs.map(c => `<div class="mem" data-act="char" data-id="${c.id}">${av(c.avatar_url, c.name, 'sm')}<div class="grow"><div style="font-weight:700;color:${esc(c.color)}">${esc(c.name)}</div></div></div>`).join('') : '<div class="small faint">No characters yet.</div>'}
+    ${canManage ? `<div class="sect">Role</div><select class="inp" id="up-role">${['admin', 'moderator', 'member', 'guest'].filter(r => RANK[r] < my).map(r => `<option value="${r}" ${mem.role === r ? 'selected' : ''}>${ROLE_META[r].join(' ')}</option>`).join('')}</select>` : ''}`,
+    `${canKick ? `<button class="btn sm danger" data-up="kick" style="margin-right:auto">Remove from world</button>` : ''}${uid !== me.id ? `<button class="btn sm primary" data-up="dm">💬 Message</button>` : `<button class="btn sm ghost" data-act="tab" data-tab="profile">Edit profile</button>`}`);
+  const sel = $('#up-role', el); if (sel) sel.onchange = async () => { const { error } = await sb.rpc('set_member_role', { w: w.id, target: uid, new_role: sel.value }); if (error) return toast(errMsg(error)); mem.role = sel.value; renderRight(); toast('Role updated'); };
+  el.addEventListener('click', async e => {
+    const b = e.target.closest('[data-up]'); if (!b) return;
+    if (b.dataset.up === 'dm') { const { data, error } = await sb.rpc('open_dm', { other: uid }); if (error) return toast(errMsg(error)); closeModal(); await loadDMs(); const t = S.dms.find(d => d.id === data); if (t) openDM(t); }
+    if (b.dataset.up === 'kick') { if (!confirm(`Remove ${pname(uid)} from ${w.name}?`)) return; const { error } = await sb.rpc('kick_member', { w: w.id, target: uid }); if (error) return toast(errMsg(error)); closeModal(); await loadWorldData(); renderAll(); }
+  });
+}
+
+/* world creation / settings / invites */
+function worldForm(w) {
+  return `<div class="row" style="gap:16px;margin-bottom:14px"><div id="wf-icon" class="rl" style="width:84px;height:84px;border-radius:22px;cursor:pointer">${w?.icon_url ? `<img src="${esc(w.icon_url)}" alt="">` : '📷'}</div>
+      <div class="grow small muted">World image — shows as the icon and banner.<br><button class="btn sm" data-wf="icon" style="margin-top:8px">Upload image</button></div></div>
+    <label class="field"><span>Name</span><input class="inp" id="wf-name" maxlength="80" value="${esc(w?.name || '')}" placeholder="Blackwood High"></label>
+    <label class="field"><span>Description</span><textarea class="inp" id="wf-desc" maxlength="600" placeholder="A modern high school roleplay.">${esc(w?.description || '')}</textarea></label>
+    <div class="field"><span>Privacy</span><div class="seg">${[['public', '🌐 Public', 'Anyone can find & join'], ['invite', '🔗 Invite only', 'Join with a link'], ['private', '🔒 Private', 'Staff invites only']].map(([v, l, d]) => `<label><input type="radio" name="wf-priv" value="${v}" ${(w?.privacy || 'invite') === v ? 'checked' : ''}><div style="font-weight:700">${l}</div><div class="tiny faint">${d}</div></label>`).join('')}</div></div>`;
+}
+function bindIconPick(el, state) {
+  el.addEventListener('click', async e => {
+    if (!e.target.closest('[data-wf=icon],#wf-icon')) return;
+    const [file] = await pickFiles('image/*', false); if (!file) return;
+    $('#wf-icon', el).innerHTML = '<div class="spin"></div>';
+    try { const up = await upload(file, 1200); state.icon_url = up.url; $('#wf-icon', el).innerHTML = `<img src="${esc(up.url)}" alt="">`; } catch (er) { toast(errMsg(er)); $('#wf-icon', el).textContent = '📷'; }
+  });
+}
+function createWorld() {
+  const st = {}; const el = modal('Create a world', worldForm(null), `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" id="wf-go">Create world</button>`);
+  bindIconPick(el, st); setTimeout(() => !isMobile() && $('#wf-name')?.focus(), 50);
+  $('#wf-go').onclick = async () => {
+    const name = $('#wf-name').value.trim(); if (!name) return toast('Name your world.');
+    $('#wf-go').disabled = true;
+    const { data, error } = await sb.from('worlds').insert({ name, description: $('#wf-desc').value.trim(), privacy: $('input[name=wf-priv]:checked').value, icon_url: st.icon_url || null, owner_id: me.id }).select().single();
+    $('#wf-go').disabled = false; if (error) return toast(errMsg(error));
+    closeModal(); await loadWorlds(); await openWorld(data.id);
+    toast('🌎 ' + data.name + ' is live — add channels with ＋ and invite your friends.');
+  };
+}
+function worldSettings() {
+  const w = S.world, st = { icon_url: w.icon_url };
+  const el = modal('World settings', worldForm(w) + `
+    <label class="check"><input type="checkbox" id="wf-cdm" ${w.allow_char_dms ? 'checked' : ''}> Allow character-to-character RP DMs</label>
+    <div class="sect">Invite link</div><div class="row"><input class="inp grow" readonly value="${esc(inviteLink(w))}"><button class="btn sm" data-ws="reset">Reset</button></div>
+    <div class="sect">Blocked characters</div><div id="ws-blocks">${[...S.blocks].map(id => S.chars[id]).filter(Boolean).map(c => `<div class="mem">${av(c.avatar_url, c.name, 'sm')}<div class="grow">${esc(c.name)} <span class="tiny faint">· ${esc(pname(c.owner_id))}</span></div><button class="btn sm ghost" data-ws="unblock" data-id="${c.id}">Unblock</button></div>`).join('') || '<div class="small faint">None. Block a character from its profile.</div>'}</div>
+    ${myRank() === 5 ? `<div class="sect">Danger zone</div><button class="btn danger" data-ws="delete">Delete world</button>` : ''}`,
+    `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" data-ws="save">Save</button>`);
+  bindIconPick(el, st);
+  el.addEventListener('click', async e => {
+    const b = e.target.closest('[data-ws]'); if (!b) return; const a = b.dataset.ws;
+    if (a === 'save') {
+      const { error } = await sb.from('worlds').update({ name: $('#wf-name').value.trim() || w.name, description: $('#wf-desc').value.trim(), privacy: $('input[name=wf-priv]:checked').value, icon_url: st.icon_url || null, allow_char_dms: $('#wf-cdm').checked }).eq('id', w.id);
+      if (error) return toast(errMsg(error)); closeModal(); await loadWorlds(); await loadWorldData(); renderAll(); if (S.chan) renderChatHeader(); else renderMain(); toast('Saved ✓');
+    }
+    if (a === 'reset') { const code = crypto.randomUUID().replace(/-/g, '').slice(0, 10); const { error } = await sb.from('worlds').update({ invite_code: code }).eq('id', w.id); if (error) return toast(errMsg(error)); w.invite_code = code; b.previousElementSibling.value = inviteLink(w); toast('Old link no longer works'); }
+    if (a === 'unblock') { await sb.from('world_char_blocks').delete().eq('world_id', w.id).eq('character_id', b.dataset.id); S.blocks.delete(b.dataset.id); b.closest('.mem').remove(); }
+    if (a === 'delete') {
+      if (prompt(`Type the world name to delete it forever:\n${w.name}`) !== w.name) return;
+      const { error } = await sb.from('worlds').delete().eq('id', w.id); if (error) return toast(errMsg(error));
+      closeModal(); closeChat(); S.world = null; await loadWorlds(); setTab('home'); toast('World deleted');
+    }
+  });
+}
+const inviteLink = w => location.origin + location.pathname + '#join=' + w.invite_code;
+function inviteModal() {
+  const w = S.world, link = inviteLink(w), canLink = w.privacy !== 'private';
+  const el = modal(`Invite to ${esc(w.name)}`, `
+    ${canLink ? `<div class="sect" style="margin-top:0">Invite link</div><div class="row"><input class="inp grow" readonly value="${esc(link)}" id="inv-link"><button class="btn sm primary" id="inv-copy">Copy</button></div>
+    ${navigator.share ? `<button class="btn sm ghost" id="inv-share" style="margin-top:8px">Share…</button>` : ''}` : `<p class="small muted">This world is private — links don't work, invite people by username.</p>`}
+    <div class="sect">Invite by username</div><div class="row"><input class="inp grow" id="inv-user" placeholder="username" autocapitalize="off"><button class="btn sm" id="inv-send">Invite</button></div>
+    <div class="tiny faint" style="margin-top:8px">They'll get a notification with Accept / Decline.</div>`);
+  $('#inv-copy', el)?.addEventListener('click', () => { navigator.clipboard?.writeText(link); toast('Link copied'); });
+  $('#inv-share', el)?.addEventListener('click', () => navigator.share({ title: w.name, text: `Join ${w.name} on Cast`, url: link }).catch(() => {}));
+  $('#inv-send', el).onclick = async () => {
+    const u = $('#inv-user').value.trim().replace(/^@/, ''); if (!u) return;
+    const { data: p } = await sb.from('profiles').select('*').ilike('username', u.replace(/[%_]/g, '')).maybeSingle();
+    if (!p) return toast('No user called @' + u);
+    if (S.members.some(m => m.user_id === p.id)) return toast(pname(p.id) + ' is already here');
+    S.profiles[p.id] = p;
+    const { error } = await sb.from('invites').insert({ world_id: w.id, inviter_id: me.id, invitee_id: p.id });
+    if (error) return toast(errMsg(error)); $('#inv-user').value = ''; toast('Invite sent to @' + p.username);
+  };
+}
+async function showJoinPreview(code) {
+  const { data } = await sb.rpc('world_preview', { code }); const w = data?.[0];
+  if (!w) return toast('That invite link is invalid or expired.');
+  if (S.role[w.id]) return openWorld(w.id);
+  const el = modal('You’re invited', `<div style="text-align:center"><div class="rl" style="width:96px;height:96px;border-radius:26px;margin:0 auto 12px">${w.icon_url ? `<img src="${esc(w.icon_url)}" alt="">` : `<span class="ini" style="font-size:34px">${esc(initials(w.name))}</span>`}</div>
+    <div class="h-display" style="font-size:26px">${esc(w.name)}</div><p class="muted">${esc(w.description || '')}</p><span class="pill">👥 ${w.members} member${w.members == 1 ? '' : 's'}</span></div>`,
+    `<button class="btn ghost" data-act="close-modal">Not now</button><button class="btn primary" id="jw">Join world</button>`);
+  $('#jw', el).onclick = async () => { const { data: id, error } = await sb.rpc('join_world', { code }); if (error) return toast(errMsg(error)); closeModal(); await loadWorlds(); openWorld(id); };
+}
+function joinCodeModal() {
+  const el = modal('Join a world', `<label class="field"><span>Invite link or code</span><input class="inp" id="jc" placeholder="https://…#join=abc123 or abc123"></label>`, `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" id="jcgo">Continue</button>`);
+  $('#jcgo', el).onclick = () => { const v = $('#jc').value.trim(); const code = (v.match(/join=([\w-]+)/) || [, v])[1]; if (code) { closeModal(); showJoinPreview(code); } };
+}
+async function previewPublic(id) {
+  const w = S.publicWorlds.find(x => x.id === id); if (!w) return;
+  const el = modal('', `<div style="text-align:center"><div class="rl" style="width:96px;height:96px;border-radius:26px;margin:0 auto 12px">${w.icon_url ? `<img src="${esc(w.icon_url)}" alt="">` : `<span class="ini" style="font-size:34px">${esc(initials(w.name))}</span>`}</div><div class="h-display" style="font-size:26px">${esc(w.name)}</div><p class="muted">${esc(w.description || '')}</p></div>`,
+    `<button class="btn ghost" data-act="close-modal">Close</button><button class="btn primary" id="jp">Join world</button>`);
+  $('#jp', el).onclick = async () => { const { data, error } = await sb.rpc('join_world', { w: id }); if (error) return toast(errMsg(error)); closeModal(); await loadWorlds(); openWorld(data); };
+}
+
+/* channels */
+function addChannel(kind) {
+  const priv = kind === 'private';
+  const el = modal('Add channel', `<div class="field"><span>Type</span><div class="seg">
+      <label><input type="radio" name="ac-k" value="rp" ${kind !== 'text' ? 'checked' : ''}><div style="font-weight:700">🎭 Roleplay</div><div class="tiny faint">Characters & scenes</div></label>
+      <label><input type="radio" name="ac-k" value="text" ${kind === 'text' ? 'checked' : ''}><div style="font-weight:700"># Text</div><div class="tiny faint">OOC chat</div></label></div></div>
+    <label class="field"><span>Name</span><input class="inp" id="ac-n" placeholder="cafeteria" maxlength="60"></label>
+    <label class="check"><input type="checkbox" id="ac-p" ${priv ? 'checked' : ''}> 🔒 Private — only people you pick (plus admins)</label>
+    <div id="ac-mem" class="${priv ? '' : 'hidden'}" style="max-height:200px;overflow:auto;margin-top:6px">${S.members.filter(m => m.user_id !== me.id && RANK[m.role] < 4).map(m => `<label class="check"><input type="checkbox" value="${m.user_id}">${esc(pname(m.user_id))}</label>`).join('') || '<div class="small faint">Everyone else here is already an admin.</div>'}</div>`,
+    `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" id="ac-go">Create</button>`);
+  $('#ac-p', el).onchange = e => $('#ac-mem', el).classList.toggle('hidden', !e.target.checked);
+  setTimeout(() => !isMobile() && $('#ac-n')?.focus(), 50);
+  const go = async () => {
+    const name = slug($('#ac-n').value); if (!$('#ac-n').value.trim()) return;
+    const isP = $('#ac-p').checked, k = $('input[name=ac-k]:checked').value;
+    const pos = Math.max(0, ...S.channels.map(c => c.position)) + 1;
+    const { data, error } = await sb.from('channels').insert({ world_id: S.world.id, name, kind: k, private: isP, position: pos, created_by: me.id }).select().single();
+    if (error) return toast(errMsg(error));
+    if (isP) { const ids = [me.id, ...$$('#ac-mem input:checked', el).map(i => i.value)]; await sb.from('channel_access').insert(ids.map(u => ({ channel_id: data.id, user_id: u }))); }
+    closeModal(); await loadWorldData(); openChannel(S.channels.find(c => c.id === data.id) || data);
+  };
+  $('#ac-go', el).onclick = go; $('#ac-n', el).onkeydown = e => { if (e.key === 'Enter') go(); };
+}
+async function channelSettings(id) {
+  const c = S.channels.find(x => x.id === id); if (!c) return;
+  const { data: acc } = await sb.from('channel_access').select('user_id').eq('channel_id', id);
+  const has = new Set((acc || []).map(a => a.user_id));
+  const el = modal(`${chanIcon(c)} ${esc(c.name)}`, `
+    <label class="field"><span>Name</span><input class="inp" id="cs-n" value="${esc(c.name)}" maxlength="60"></label>
+    <label class="field"><span>Topic</span><input class="inp" id="cs-t" value="${esc(c.topic || '')}" maxlength="200" placeholder="What happens here?"></label>
+    <div class="field"><span>Type</span><div class="seg"><label><input type="radio" name="cs-k" value="rp" ${c.kind === 'rp' ? 'checked' : ''}>🎭 Roleplay</label><label><input type="radio" name="cs-k" value="text" ${c.kind === 'text' ? 'checked' : ''}># Text</label></div></div>
+    <div class="field"><span>Who can post</span><select class="inp" id="cs-r">${[[1, 'Everyone, including guests'], [2, 'Members and up'], [3, 'Moderators and up'], [4, 'Admins only']].map(([v, l]) => `<option value="${v}" ${c.min_rank === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+    <label class="check"><input type="checkbox" id="cs-p" ${c.private ? 'checked' : ''}> 🔒 Private channel</label>
+    <div id="cs-mem" class="${c.private ? '' : 'hidden'}" style="max-height:200px;overflow:auto">${S.members.filter(m => RANK[m.role] < 4).map(m => `<label class="check"><input type="checkbox" value="${m.user_id}" ${has.has(m.user_id) ? 'checked' : ''}>${esc(pname(m.user_id))}</label>`).join('') || '<div class="small faint">Only admins here.</div>'}<div class="tiny faint">Admins & owner always have access.</div></div>
+    ${!c.parent_id ? `<div class="sect">Order</div><div class="row"><button class="btn sm ghost" data-cs="up">↑ Move up</button><button class="btn sm ghost" data-cs="down">↓ Move down</button></div>` : ''}
+    <div class="sect">Manage</div><div class="row wrap"><button class="btn sm ghost" data-cs="arch">${c.archived ? '📤 Unarchive' : '🗄️ Archive (read-only)'}</button><button class="btn sm danger" data-cs="del">Delete channel</button></div>`,
+    `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" data-cs="save">Save</button>`);
+  $('#cs-p', el).onchange = e => $('#cs-mem', el).classList.toggle('hidden', !e.target.checked);
+  el.addEventListener('click', async e => {
+    const b = e.target.closest('[data-cs]'); if (!b) return; const a = b.dataset.cs;
+    const done = async () => { closeModal(); await loadWorldData(); renderAll(); if (S.chan) { renderChatHeader(); renderComposer(); } };
+    if (a === 'save') {
+      const p = $('#cs-p').checked;
+      const { error } = await sb.from('channels').update({ name: slug($('#cs-n').value), topic: $('#cs-t').value.trim(), kind: $('input[name=cs-k]:checked').value, private: p, min_rank: +$('#cs-r').value }).eq('id', id);
+      if (error) return toast(errMsg(error));
+      if (p) {
+        const want = new Set($$('#cs-mem input:checked', el).map(i => i.value)); want.add(me.id);
+        const add = [...want].filter(u => !has.has(u)), rem = [...has].filter(u => !want.has(u) && u !== me.id);
+        if (add.length) await sb.from('channel_access').insert(add.map(u => ({ channel_id: id, user_id: u })));
+        if (rem.length) await sb.from('channel_access').delete().eq('channel_id', id).in('user_id', rem);
+      }
+      done(); toast('Saved ✓');
+    }
+    if (a === 'up' || a === 'down') {
+      const sibs = S.channels.filter(x => !x.parent_id).sort((x, y) => x.position - y.position);
+      const i = sibs.findIndex(x => x.id === id), j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= sibs.length) return;
+      [sibs[i], sibs[j]] = [sibs[j], sibs[i]];
+      await Promise.all(sibs.map((x, k) => x.position !== k ? sb.from('channels').update({ position: k }).eq('id', x.id) : null));
+      done();
+    }
+    if (a === 'arch') { await sb.from('channels').update({ archived: !c.archived }).eq('id', id); done(); }
+    if (a === 'del') { if (!confirm(`Delete #${c.name} and all its messages? This can't be undone.`)) return; const { error } = await sb.from('channels').delete().eq('id', id); if (error) return toast(errMsg(error)); if (S.chan?.id === id) closeChat(); done(); }
+  });
+}
+function worldMenu(anchor) {
+  const rk = myRank();
+  popover(anchor, `<div class="ptitle">${esc(S.world.name)}</div>
+    ${rk >= 2 ? `<button class="mi" data-wm="invite">👤 Invite people</button>` : ''}
+    ${rk >= 4 ? `<button class="mi" data-wm="add">＋ Add channel</button><button class="mi" data-wm="settings">⚙️ World settings</button>` : ''}
+    <button class="mi" data-wm="search">🔎 Search this world</button>
+    <button class="mi" data-wm="members">👥 Members & characters</button>
+    ${rk < 5 ? `<button class="mi dz" data-wm="leave">🚪 Leave world</button>` : ''}`, pop => pop.onclick = async e => {
+    const b = e.target.closest('[data-wm]'); if (!b) return; pop.remove(); const a = b.dataset.wm;
+    if (a === 'invite') inviteModal(); if (a === 'add') addChannel('rp'); if (a === 'settings') worldSettings(); if (a === 'search') searchModal();
+    if (a === 'members') { S.showRight = true; LS.set('showRight', true); renderAll(); $('#right')?.classList.add('open'); }
+    if (a === 'leave') { if (!confirm('Leave ' + S.world.name + '?')) return; const { error } = await sb.rpc('leave_world', { w: S.world.id }); if (error) return toast(errMsg(error)); closeChat(); S.world = null; await loadWorlds(); setTab('home'); }
+  });
+}
+
+/* scenes */
+function sceneModal(msgId) {
+  const m = S.msgs.find(x => x.id === msgId); const c = S.chan;
+  const who = m?.character_id ? S.chars[m.character_id]?.name : pname(m?.author_id);
+  const mine = currentChar()?.name;
+  const el = modal('Create scene', `<p class="small muted" style="margin-top:0">A scene is a side-thread under #${esc(c.parent_id ? S.channels.find(x => x.id === c.parent_id)?.name : c.name)} for a smaller group — no new channel needed.</p>
+    <label class="field"><span>Scene name</span><input class="inp" id="sc-n" value="${esc(`scene: ${[who, mine].filter((x, i, a) => x && a.indexOf(x) === i).join(' & ')}`.slice(0, 60))}" maxlength="60"></label>
+    <label class="check"><input type="checkbox" id="sc-p"> 🔒 Private — only people I pick</label>
+    <div id="sc-mem" class="hidden" style="max-height:200px;overflow:auto">${S.members.filter(x => x.user_id !== me.id).map(x => `<label class="check"><input type="checkbox" value="${x.user_id}" ${x.user_id === m?.author_id ? 'checked' : ''}>${esc(pname(x.user_id))}</label>`).join('')}</div>`,
+    `<button class="btn ghost" data-act="close-modal">Cancel</button><button class="btn primary" id="sc-go">Create scene</button>`);
+  $('#sc-p', el).onchange = e => $('#sc-mem', el).classList.toggle('hidden', !e.target.checked);
+  $('#sc-go', el).onclick = async () => {
+    const { data: nid, error } = await sb.rpc('create_scene', { parent: c.id, scene_name: slug($('#sc-n').value), is_private: $('#sc-p').checked, member_ids: $$('#sc-mem input:checked', el).map(i => i.value) });
+    if (error) return toast(errMsg(error));
+    closeModal(); await loadWorldData();
+    const sc = S.channels.find(x => x.id === nid); if (!sc) return;
+    await openChannel(sc);
+    if (m && !m.deleted) {
+      const q = (m.content || '').split('\n').map(l => '> ' + l).join('\n').slice(0, 1500);
+      const cur = currentChar();
+      await sb.from('messages').insert({ channel_id: nid, author_id: me.id, character_id: cur?.id || null, content: `> ${who}:\n${q}`, reply_to: null, mentions: [], attachments: [] });
+    }
+  };
+}
+
+/* DMs */
+function newDM() {
+  const el = modal('New message', `<input class="inp" id="nd-q" placeholder="Search by username…" autocapitalize="off"><div id="nd-res" style="margin-top:10px"></div>`);
+  const run = async () => {
+    const q = $('#nd-q').value.trim().replace(/[%_@]/g, ''); if (q.length < 1) { $('#nd-res').innerHTML = ''; return; }
+    const { data } = await sb.from('profiles').select('*').or(`username.ilike.%${q}%,display_name.ilike.%${q}%`).neq('id', me.id).limit(12);
+    (data || []).forEach(p => S.profiles[p.id] = p);
+    $('#nd-res').innerHTML = (data || []).map(p => `<div class="mem" data-nd="${p.id}"><div class="dotwrap">${av(p.avatar_url, pname(p.id), 'sm')}${pdot(p.id)}</div><div class="grow"><div style="font-weight:700">${esc(pname(p.id))}</div><div class="tiny faint">@${esc(p.username)}</div></div></div>`).join('') || '<div class="small faint">No one found.</div>';
+  };
+  let t; $('#nd-q', el).oninput = () => { clearTimeout(t); t = setTimeout(run, 250); }; setTimeout(() => $('#nd-q')?.focus(), 50);
+  el.addEventListener('click', async e => { const b = e.target.closest('[data-nd]'); if (!b) return; const { data, error } = await sb.rpc('open_dm', { other: b.dataset.nd }); if (error) return toast(errMsg(error)); closeModal(); await loadDMs(); const th = S.dms.find(d => d.id === data); if (th) openDM(th); });
+}
+
+/* search */
+function searchModal() {
+  const w = S.world;
+  const el = modal('Search roleplay history', `
+    <input class="inp" id="sq" placeholder="Search messages… e.g. hospital" autocomplete="off">
+    <details style="margin:10px 0"><summary class="small muted" style="cursor:pointer">Filters</summary>
+      <div class="row wrap" style="margin-top:10px;align-items:flex-start">
+        <label class="field grow" style="min-width:150px"><span>World</span><select class="inp" id="sw"><option value="">All my worlds</option>${S.worlds.map(x => `<option value="${x.id}" ${w?.id === x.id ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>
+        <label class="field grow" style="min-width:150px"><span>Channel</span><select class="inp" id="sch"><option value="">Any channel</option>${w ? S.channels.map(c => `<option value="${c.id}">#${esc(c.name)}</option>`).join('') : ''}</select></label>
+      </div><div class="row wrap" style="align-items:flex-start">
+        <label class="field grow" style="min-width:150px"><span>Character</span><input class="inp" id="sc" placeholder="Mia"></label>
+        <label class="field grow" style="min-width:150px"><span>User</span><input class="inp" id="su" placeholder="alex"></label>
+      </div><div class="row wrap" style="align-items:flex-start">
+        <label class="field grow"><span>From</span><input class="inp" type="date" id="sf"></label><label class="field grow"><span>To</span><input class="inp" type="date" id="st"></label>
+      </div></details>
+    <button class="btn primary" id="sgo" style="width:100%">Search</button><div id="sres" style="margin-top:14px"></div>`, '', true);
+  setTimeout(() => !isMobile() && $('#sq')?.focus(), 50);
+  const go = async () => {
+    const res = $('#sres'); res.innerHTML = '<div class="spin" style="margin:20px auto"></div>';
+    let q = sb.from('messages').select('*').eq('deleted', false).order('created_at', { ascending: false }).limit(60);
+    const text = $('#sq').value.trim(); if (text) q = q.ilike('content', `%${text.replace(/[%_]/g, '')}%`);
+    if ($('#sw').value) q = q.eq('world_id', $('#sw').value);
+    if ($('#sch').value) q = q.eq('channel_id', $('#sch').value);
+    const cn = $('#sc').value.trim(); if (cn) { const { data } = await sb.from('characters').select('id').ilike('name', `%${cn.replace(/[%_]/g, '')}%`).limit(50); q = q.in('character_id', (data || []).map(x => x.id).concat(['00000000-0000-0000-0000-000000000000'])); }
+    const un = $('#su').value.trim().replace(/^@/, ''); if (un) { const { data } = await sb.from('profiles').select('id').or(`username.ilike.%${un.replace(/[%_]/g, '')}%,display_name.ilike.%${un.replace(/[%_]/g, '')}%`).limit(50); q = q.in('author_id', (data || []).map(x => x.id).concat(['00000000-0000-0000-0000-000000000000'])); }
+    if ($('#sf').value) q = q.gte('created_at', new Date($('#sf').value).toISOString());
+    if ($('#st').value) { const d = new Date($('#st').value); d.setDate(d.getDate() + 1); q = q.lt('created_at', d.toISOString()); }
+    if (!text && !cn && !un && !$('#sch').value && !$('#sf').value && !$('#st').value) { res.innerHTML = '<div class="small faint">Type something or pick a filter.</div>'; return; }
+    const { data, error } = await q; if (error) { res.innerHTML = esc(errMsg(error)); return; }
+    await ensureProfiles((data || []).map(m => m.author_id)); await ensureChars((data || []).map(m => m.character_id).filter(Boolean));
+    const chIds = [...new Set((data || []).map(m => m.channel_id).filter(Boolean))];
+    const chMap = {}; if (chIds.length) { const { data: chs } = await sb.from('channels').select('*').in('id', chIds); (chs || []).forEach(c => chMap[c.id] = c); }
+    el._chMap = chMap;
+    res.innerHTML = (data || []).length ? `<div class="tiny faint" style="margin-bottom:8px">${data.length}${data.length === 60 ? '+' : ''} result${data.length === 1 ? '' : 's'}</div>` + data.map(m => {
+      const ch = m.character_id ? S.chars[m.character_id] : null, chn = chMap[m.channel_id], wn = S.worlds.find(x => x.id === m.world_id);
+      const dm = m.dm_id && S.dms.find(d => d.id === m.dm_id);
+      let snip = esc(m.content.slice(0, 260)); if (text) snip = snip.replace(new RegExp(esc(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), x => `<mark style="background:var(--mention-bg);color:var(--accent)">${x}</mark>`);
+      return `<div class="sres" data-sres="${m.id}"><div class="tiny muted" style="font-weight:700">${dm ? '💬 ' + esc(dmTitle(dm).title) : `${esc(wn?.name || '')} — ${chn ? chanIcon(chn) + ' ' + esc(chn.name) : ''}`}</div>
+        <div class="row" style="margin:6px 0 4px">${ch ? av(ch.avatar_url, ch.name, 'xs') : av(S.profiles[m.author_id]?.avatar_url, pname(m.author_id), 'xs')}<b style="${ch ? `color:${esc(ch.color)}` : ''}">${esc(ch ? ch.name : pname(m.author_id))}</b><span class="tiny faint">${ch ? 'by ' + esc(pname(m.author_id)) + ' · ' : ''}${fmtTime(m.created_at)}</span></div>
+        <div class="small" style="white-space:pre-wrap">${snip || '📎 attachment'}</div></div>`;
+    }).join('') : '<div class="empty small">Nothing found.</div>';
+  };
+  $('#sgo', el).onclick = go; $('#sq', el).onkeydown = e => { if (e.key === 'Enter') go(); };
+  $('#sw', el).onchange = async e => {
+    const wid = e.target.value; const sel = $('#sch', el);
+    if (!wid) { sel.innerHTML = '<option value="">Any channel</option>'; return; }
+    const { data } = await sb.from('channels').select('*').eq('world_id', wid).order('position');
+    sel.innerHTML = '<option value="">Any channel</option>' + (data || []).map(c => `<option value="${c.id}">#${esc(c.name)}</option>`).join('');
+  };
+  el.addEventListener('click', async e => {
+    const r = e.target.closest('[data-sres]'); if (!r) return;
+    const { data: m } = await sb.from('messages').select('*').eq('id', r.dataset.sres).maybeSingle(); if (!m) return;
+    closeModal();
+    if (m.dm_id) { const d = S.dms.find(x => x.id === m.dm_id); if (d) await jumpTo(m.id, { ...d, _dm: true }); }
+    else { const c = el._chMap[m.channel_id]; if (c) await jumpTo(m.id, c); }
+  });
+}
+
+/* notifications */
+async function openNotif(n) {
+  if (!n.read && n.kind !== 'invite') { n.read = true; sb.from('notifications').update({ read: true }).eq('id', n.id); renderRail(); renderNav(); }
+  if (n.kind === 'invite') { setTab('notifs'); return; }
+  if (n.dm_id) { let d = S.dms.find(x => x.id === n.dm_id); if (!d) { await loadDMs(); d = S.dms.find(x => x.id === n.dm_id); } if (d) { await openDM(d); if (n.message_id) jumpTo(n.message_id); } return; }
+  if (n.channel_id && n.world_id) {
+    if (!S.worlds.find(w => w.id === n.world_id)) return toast('You’re not in that world anymore.');
+    await openWorld(n.world_id, n.channel_id);
+    if (S.chan?.id !== n.channel_id) { const c = S.channels.find(x => x.id === n.channel_id); if (c) await openChannel(c); else return toast('Channel not available'); }
+    if (n.message_id) jumpTo(n.message_id);
+  }
+}
+async function respondInvite(inviteId, yes) {
+  const { data, error } = await sb.rpc('respond_invite', { inv: inviteId, accept: yes }); if (error) return toast(errMsg(error));
+  S.notifs.filter(n => n.invite_id === inviteId).forEach(n => n.read = true);
+  if (yes) { await loadWorlds(); await openWorld(data); toast('Welcome in!'); } else { renderMain(); renderNav(); renderRail(); }
+}
+
+/* lightbox */
+let lbList = [], lbIdx = 0;
+function lightbox(src, list) {
+  lbList = list?.length ? list : [src]; lbIdx = Math.max(0, lbList.indexOf(src));
+  const lb = $('#lightbox'); lb.classList.add('open'); lbShow();
+}
+function lbShow() { const lb = $('#lightbox'); $('img', lb).src = lbList[lbIdx]; $('a', lb).href = lbList[lbIdx]; $$('.lbnav', lb).forEach(b => b.style.display = lbList.length > 1 ? '' : 'none'); }
+$('#lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') $('#lightbox').classList.remove('open'); });
+addEventListener('keydown', e => {
+  if ($('#lightbox').classList.contains('open')) { if (e.key === 'Escape') $('#lightbox').classList.remove('open'); if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbList.length; lbShow(); } if (e.key === 'ArrowLeft') { lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; lbShow(); } return; }
+  if (e.key === 'Escape' && $('#overlay').classList.contains('open')) closeModal();
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k' && me) { e.preventDefault(); searchModal(); }
+});
+
+/* message actions */
+function startEdit(id) {
+  const m = S.msgs.find(x => x.id === id); if (!m) return;
+  S.editing = id; S.replyTo = null; const ta = $('#ctext'); ta.value = m.content; autosize(); renderBar(); updatePlaceholder(); ta.focus();
+}
+async function deleteMsg(id) {
+  const m = S.msgs.find(x => x.id === id); if (!m) return;
+  if (!confirm('Delete this message?')) return;
+  const { error } = await sb.rpc('delete_message', { mid: id }); if (error) return toast(errMsg(error));
+  if (m.author_id === me.id) removeFiles((m.attachments || []).map(a => a.path));
+  Object.assign(m, { deleted: true, content: '', attachments: [], reactions: {} }); renderMsgs('keep');
+}
+async function react(id, e) {
+  const m = S.msgs.find(x => x.id === id); if (!m) return;
+  const r = { ...(m.reactions || {}) }; const arr = [...(r[e] || [])];
+  if (arr.includes(me.id)) { r[e] = arr.filter(x => x !== me.id); if (!r[e].length) delete r[e]; } else r[e] = [...arr, me.id];
+  m.reactions = r; renderMsgs('keep');
+  const { error } = await sb.rpc('toggle_reaction', { mid: id, emo: e }); if (error) toast(errMsg(error));
+}
+function emojiPicker(anchor, id) {
+  popover(anchor, `<div class="ptitle">React</div><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:4px">${MORE_EMO.map(e => `<button class="mi" style="justify-content:center;font-size:22px;padding:6px;min-height:44px" data-em="${e}">${e}</button>`).join('')}</div>`,
+    pop => pop.onclick = ev => { const b = ev.target.closest('[data-em]'); if (b) { pop.remove(); react(id, b.dataset.em); } });
+}
+function mobileMsgSheet(id) {
+  const m = S.msgs.find(x => x.id === id); if (!m || m.deleted) return;
+  const own = m.author_id === me.id, mod = !S.chan._dm && myRank() >= 3;
+  popover(null, `<div style="display:flex;justify-content:space-around;padding:6px 4px 10px">${QUICK.map(e => `<button style="font-size:26px;width:46px;height:46px;border-radius:50%;background:var(--panel)" data-ms="react" data-e="${e}">${e}</button>`).join('')}</div>
+    <button class="mi" data-ms="reply">↩️ Reply</button>
+    ${m.character_id ? `<button class="mi" data-ms="char">🎭 View ${esc(S.chars[m.character_id]?.name || 'character')}</button>` : ''}
+    ${!S.chan._dm && canPost() ? `<button class="mi" data-ms="scene">🧵 Create scene from this</button>` : ''}
+    <button class="mi" data-ms="copy">📋 Copy text</button>
+    ${own ? `<button class="mi" data-ms="edit">✏️ Edit</button>` : ''}${own || mod ? `<button class="mi dz" data-ms="del">🗑️ Delete</button>` : ''}`, pop => pop.onclick = e => {
+    const b = e.target.closest('[data-ms]'); if (!b) return; pop.remove(); const a = b.dataset.ms;
+    if (a === 'react') react(id, b.dataset.e); if (a === 'reply') { S.replyTo = id; S.editing = null; renderBar(); $('#ctext')?.focus(); }
+    if (a === 'char') charProfile(m.character_id); if (a === 'scene') sceneModal(id); if (a === 'copy') { navigator.clipboard?.writeText(m.content); toast('Copied'); }
+    if (a === 'edit') startEdit(id); if (a === 'del') deleteMsg(id);
+  });
+}
+
+/* ---------- global click delegation ---------- */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) {
+    // mobile: tap a message for actions
+    const msg = e.target.closest('.msg[data-mid]');
+    if (msg && isMobile() && !e.target.closest('a,img,.who,.pb,.gut,.mention,.rx,.rep,.spoiler')) mobileMsgSheet(msg.dataset.mid);
+    return;
+  }
+  const a = el.dataset.act, id = el.dataset.id;
+  if (el.tagName === 'A' && a) e.preventDefault();
+  switch (a) {
+    case 'tab': closeModal(); if (el.dataset.tab === 'home' && isMobile() && S.tab === 'world' && S.mpane === 'side') { S.world = null; } setTab(el.dataset.tab); break;
+    case 'world': closePop(); await openWorld(id); if (isMobile() && !S.chan) { S.mpane = 'side'; renderAll(); } break;
+    case 'chan': { const c = S.channels.find(x => x.id === id); if (e.target.closest('.gear')) return; if (c) openChannel(c); break; }
+    case 'chan-settings': e.stopPropagation(); channelSettings(id); break;
+    case 'dm': { const d = S.dms.find(x => x.id === id); if (d) openDM(d); break; }
+    case 'mback': { closeChat(); S.mpane = 'side'; if (S.tab === 'world' || S.tab === 'messages') { renderAll(); renderMain(); } else render(); break; }
+    case 'create-world': createWorld(); break;
+    case 'join-code': joinCodeModal(); break;
+    case 'preview-world': previewPublic(id); break;
+    case 'add-chan': addChannel(el.dataset.kind); break;
+    case 'world-menu': worldMenu(el); break;
+    case 'invite': inviteModal(); break;
+    case 'search': searchModal(); break;
+    case 'new-dm': newDM(); break;
+    case 'new-char': charEditor(null); break;
+    case 'new-bot': charEditor(null, false, { bot: true }); break;
+    case 'edit-char': e.stopPropagation(); charEditor(id); break;
+    case 'char': closePop(); charProfile(id); break;
+    case 'user': closePop(); userProfile(id); break;
+    case 'pick-char': charPicker(el); break;
+    case 'bots': botMenu(el); break;
+    case 'ai-save': LS.set('ai', readAiForm()); $('#ai-st').textContent = 'Saved ✓'; break;
+    case 'ai-test': { const cfg = { ...aiCfg(), ...Object.fromEntries(Object.entries(readAiForm()).filter(([, v]) => v)) }; $('#ai-st').textContent = 'Testing…'; try { const t = await aiGenerate({ name: 'Test Bot', personality: 'Cheerful and brief.' }, [{ author_id: me.id, content: 'Say hi in one short sentence.' }], cfg); $('#ai-st').textContent = '✓ Works! Bot said: ' + t.slice(0, 80); LS.set('ai', readAiForm()); } catch (er) { $('#ai-st').textContent = '✗ ' + errMsg(er); } break; }
+    case 'toggle-right': if (isMobile()) { renderRight(); $('#right').classList.add('open'); } else { S.showRight = !S.showRight; LS.set('showRight', S.showRight); renderAll(); } break;
+    case 'close-right': $('#right').classList.remove('open'); break;
+    case 'rtab': S.rightTab = el.dataset.t; renderRight(); if (isMobile()) $('#right').classList.add('open'); break;
+    case 'follow': {
+      const c = S.chan; if (S.follows.has(c.id)) { await sb.from('channel_follows').delete().eq('user_id', me.id).eq('channel_id', c.id); S.follows.delete(c.id); toast('Unfollowed #' + c.name); }
+      else { const { error } = await sb.from('channel_follows').insert({ user_id: me.id, channel_id: c.id }); if (error) return toast(errMsg(error)); S.follows.add(c.id); toast('🔔 You’ll be notified about new messages in #' + c.name); }
+      renderChatHeader(); break;
+    }
+    case 'send': sendMessage(); break;
+    case 'attach': popover(el, `<button class="mi" data-at="img">📷 Image</button><button class="mi" data-at="gif">🖼️ GIF</button><button class="mi" data-at="file">📁 File</button><button class="mi" data-at="link">🔗 Link</button>`, pop => pop.onclick = async ev => {
+      const b = ev.target.closest('[data-at]'); if (!b) return; pop.remove(); const t = b.dataset.at;
+      if (t === 'link') { const u = prompt('Paste a link'); if (u) { const ta = $('#ctext'); ta.value += (ta.value && !/\s$/.test(ta.value) ? ' ' : '') + u.trim() + ' '; autosize(); ta.focus(); } return; }
+      const files = await pickFiles(t === 'img' ? 'image/*' : t === 'gif' ? 'image/gif' : '', true); if (files.length) addFiles(files);
+    }); break;
+    case 'unpend': { const it = S.pending.splice(+el.dataset.i, 1)[0]; if (it?.path) removeFiles([it.path]); renderPending(); break; }
+    case 'cancel-bar': cancelBar(); break;
+    case 'older': loadMessages(true); break;
+    case 'react': react(id, el.dataset.e); break;
+    case 'react-more': emojiPicker(el, id); break;
+    case 'reply': S.replyTo = id; S.editing = null; renderBar(); $('#ctext')?.focus(); break;
+    case 'edit': startEdit(id); break;
+    case 'del': deleteMsg(id); break;
+    case 'scene': sceneModal(id); break;
+    case 'jump': jumpTo(id); break;
+    case 'spoil': el.classList.toggle('open'); break;
+    case 'lightbox': {
+      const modalEl = el.closest('.modal'); let list;
+      if (modalEl?.dataset.gal) list = JSON.parse(modalEl.dataset.gal);
+      else if (el.dataset.gal != null) list = $$('[data-gal]', el.closest('.gal')).map(x => x.dataset.src);
+      else list = $$('.atts img', el.closest('.atts')).map(x => x.dataset.src);
+      lightbox(el.dataset.src, list); break;
+    }
+    case 'lb-close': $('#lightbox').classList.remove('open'); break;
+    case 'lb-prev': lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; lbShow(); break;
+    case 'lb-next': lbIdx = (lbIdx + 1) % lbList.length; lbShow(); break;
+    case 'close-modal': closeModal(); break;
+    case 'notif': if (e.target.closest('[data-act=inv-yes],[data-act=inv-no]')) return; openNotif(S.notifs.find(n => n.id === id)); break;
+    case 'inv-yes': respondInvite(id, true); break;
+    case 'inv-no': respondInvite(id, false); break;
+    case 'notif-readall': await sb.from('notifications').update({ read: true }).eq('user_id', me.id).neq('kind', 'invite'); S.notifs.forEach(n => n.kind !== 'invite' && (n.read = true)); render(); break;
+    case 'notif-clear': await sb.from('notifications').delete().eq('user_id', me.id).eq('read', true); S.notifs = S.notifs.filter(n => !n.read); render(); break;
+    case 'pf-save': {
+      const un = $('#pf-un').value.trim().replace(/[^a-zA-Z0-9_]/g, '');
+      if (un.length < 2) return toast('Username needs 2+ letters/numbers');
+      const { data, error } = await sb.from('profiles').update({ display_name: $('#pf-dn').value.trim() || un, username: un, bio: $('#pf-bio').value.trim() }).eq('id', me.id).select().single();
+      if (error) return toast(/unique|duplicate/i.test(error.message) ? 'That username is taken' : errMsg(error));
+      me = data; S.profiles[me.id] = me; toast('Profile saved ✓'); renderAll(); renderMain(); break;
+    }
+    case 'pf-avatar': { const [f] = await pickFiles('image/*', false); if (!f) return; try { const up = await upload(f, 600); const { data } = await sb.from('profiles').update({ avatar_url: up.url }).eq('id', me.id).select().single(); me = data; S.profiles[me.id] = me; renderAll(); renderMain(); } catch (er) { toast(errMsg(er)); } break; }
+    case 'pf-avatar-rm': { const { data } = await sb.from('profiles').update({ avatar_url: null }).eq('id', me.id).select().single(); me = data; S.profiles[me.id] = me; renderAll(); renderMain(); break; }
+    case 'pf-accent': LS.set('accent', el.dataset.c); applyTheme(); renderMain(); break;
+    case 'signout': await sb.auth.signOut(); location.reload(); break;
+  }
+});
+addEventListener('resize', () => { const s = $('#shell'); if (s) { s.classList.toggle('noright', !(S.tab === 'world' && S.chan && S.showRight) || isMobile()); } });
+</script>
+</body>
+</html>
